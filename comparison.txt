@@ -1,0 +1,5 @@
+program,local,Colab, Colab A100
+GridWorldDQN.py,35,35,27
+GridWorldPPO.py,34,41,20
+GridWorldA2C.py, 47,77,38
+GridWorldPPORecurrent.py,N/A,,29
