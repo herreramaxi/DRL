@@ -1,4 +1,5 @@
 import os
+from cudaCheck import is_cuda_available
 import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -13,6 +14,7 @@ LOG_DIR = "./ppo_logs"
 TOTAL_TIMESTEPS = 100_000
 N_ENVS = 16
 
+is_cuda_available()
 register_gridworld_env()
 
 def make_env():

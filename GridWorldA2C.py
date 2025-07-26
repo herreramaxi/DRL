@@ -1,4 +1,5 @@
 import os
+from cudaCheck import is_cuda_available
 import gymnasium as gym
 import torch
 from stable_baselines3 import A2C
@@ -23,9 +24,7 @@ def make_env():
     return Monitor(env)
 
 if __name__ == "__main__":
-    print("CUDA Available:", torch.cuda.is_available())
-    if torch.cuda.is_available():
-        print("Using GPU:", torch.cuda.get_device_name(0))
+    is_cuda_available()
 
     vec_env = make_vec_env(make_env, n_envs=N_ENVS, vec_env_cls=SubprocVecEnv)  # ✅ No subprocess issue
 

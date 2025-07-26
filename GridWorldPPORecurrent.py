@@ -1,4 +1,5 @@
 import os
+from cudaCheck import is_cuda_available
 import gymnasium as gym
 from stable_baselines3 import PPO
 from sb3_contrib import RecurrentPPO
@@ -14,6 +15,7 @@ LOG_DIR = "./ppo_recurrent_logs"
 TOTAL_TIMESTEPS = 100_000
 N_ENVS = 8
 
+is_cuda_available()
 register_gridworld_env()
 
 def make_env():

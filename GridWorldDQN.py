@@ -1,4 +1,5 @@
 import os
+from cudaCheck import is_cuda_available
 import gymnasium as gym
 from stable_baselines3 import DQN
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -6,10 +7,7 @@ from stable_baselines3.common.monitor import Monitor
 from GridWorld.GridWorldEnv import register_gridworld_env
 from GridWorld.GridWorldStateWrapper import GridWorldStateWrapper
 
-import torch
-print(torch.cuda.is_available())  # Should return True
-print(torch.cuda.get_device_name(0))  # Should
-
+is_cuda_available()
 # ==========================
 # Configuration
 # ==========================
