@@ -1,0 +1,20 @@
+name: gymnasium-env
+channels:
+  - nvidia
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pytorch
+  - torchvision
+  - torchaudio
+  - pytorch-cuda=12.1  # Adjust to your CUDA version (check `nvidia-smi`)
+  - pip
+  - pip:
+      - gymnasium
+      - pygame
+      - box2d
+      - tqdm
+      - matplotlib
+      - stable-baselines3[extra]
+      - sb3_contrib
