@@ -1,8 +1,9 @@
 from __future__ import print_function
 import sys
+
+from ChessGame.games.gardner.GardnerMiniChessLogic import Board
 sys.path.append("/Users/shiningsunnyday/Desktop/2021-2022/Fall Quarter/AA 228/Final Project/mcts-chess")
-from games import Game
-from games.gardner.GardnerMiniChessLogic import Board
+from ChessGame.games.game import Game
 import numpy as np
 import time
 import hashlib

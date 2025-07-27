@@ -8,7 +8,7 @@ dependencies:
   - pytorch
   - torchvision
   - torchaudio
-  - pytorch-cuda=12.1  # Adjust to your CUDA version (check `nvidia-smi`)
+  - pytorch-cuda=12.1 
   - pip
   - pip:
       - gymnasium
@@ -18,3 +18,4 @@ dependencies:
       - matplotlib
       - stable-baselines3[extra]
       - sb3_contrib
+      - tensorboard  
