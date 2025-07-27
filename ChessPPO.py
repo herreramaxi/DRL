@@ -80,20 +80,21 @@ if __name__ == "__main__":  # ✅ Required for Windows
     if not os.path.exists(MODEL_PATH):
         print("Training PPO agent with GPU and parallel environments...")
         model = PPO(
-            policy="MultiInputPolicy",  # ✅ For Dict observations
-            env=env,
-            verbose=1,
-            learning_rate=0.0003,
-            n_steps=N_STEPS,
-            batch_size=BATCH_SIZE,
-            n_epochs=N_EPOCHS,
-            gamma=0.99,
-            gae_lambda=0.95,
-            clip_range=0.2,
-            ent_coef=0.01,
-            device="cuda" if is_cuda_available() else "cpu",  # ✅ Use GPU if available
-            tensorboard_log=LOG_DIR,
-        )
+        policy="MultiInputPolicy",
+        env=env,
+        verbose=1,
+        learning_rate=1e-4,        # Could later tune to 1e-5 if overfitting
+        n_steps=N_STEPS,              # Rollout steps per environment
+        batch_size=BATCH_SIZE,            # Ensure divisibility (n_steps * n_envs) % batch_size == 0
+        n_epochs=N_EPOCHS,               # PPO update passes
+        gamma=0.3,                 # Low discount factor as per research
+        gae_lambda=1.0,            # Full advantage estimation
+        clip_range=0.2,
+        ent_coef=0.01,             # Encourages exploration
+        vf_coef=0.5,               # Value loss coefficient (default)
+        max_grad_norm=0.5,
+        device="cuda" if is_cuda_available() else "cpu",
+        tensorboard_log=LOG_DIR)
         
         callback = WinRateCallback(log_interval=5000)
         model.learn(total_timesteps=TOTAL_TIMESTEPS, tb_log_name="PPO_Chess",callback=callback)
