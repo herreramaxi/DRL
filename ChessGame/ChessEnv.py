@@ -15,7 +15,7 @@ from ChessGame.games.gardner.GardnerMiniChessGame import GardnerMiniChessGame
 
 # Reward Constants (scaled to match max material ~125)
 INVALID_MOVE_REWARD = -200      # Strong penalty for invalid moves
-VALID_MOVE_REWARD = 5           # Small positive reward for valid move
+VALID_MOVE_REWARD = 1           # Small positive reward for valid move
 CHECK_REWARD = 50               # Check reward (≈ 40% of max material)
 CHECKMATE_REWARD = 500          # Big reward for checkmate (≈ 4x max material)
 DRAW_REWARD = 100               # Reward for draw (≈ material advantage)
@@ -57,7 +57,7 @@ class MinichessEnv(gym.Env):
         if action not in self.legal_moves:
             info["move"] = "invalid"
             reward = INVALID_MOVE_REWARD
-            done = False  # Keep episode going for agent to learn
+            done = True  #WIP
             truncated = self.steps >= MAX_STEPS
             return self._obs(), reward, done, truncated, info
 
