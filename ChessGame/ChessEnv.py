@@ -13,13 +13,13 @@ from ChessGame.games.gardner.GardnerMiniChessGame import GardnerMiniChessGame
 # CHECK_REWARD = 500
 # INVALID_MOVE_REWARD = -1000
 
-# Constants for reward shaping
-INVALID_MOVE_REWARD = -50000
-VALID_MOVE_REWARD = 10
-CHECK_REWARD = 500
-CHECKMATE_REWARD = 25000
-DRAW_REWARD = 10000
-MATERIAL_SCALE = 1 / 1000  # Scale for material shaping
+# Reward Constants (scaled to match max material ~125)
+INVALID_MOVE_REWARD = -200      # Strong penalty for invalid moves
+VALID_MOVE_REWARD = 5           # Small positive reward for valid move
+CHECK_REWARD = 50               # Check reward (≈ 40% of max material)
+CHECKMATE_REWARD = 500          # Big reward for checkmate (≈ 4x max material)
+DRAW_REWARD = 100               # Reward for draw (≈ material advantage)
+MATERIAL_SCALE = 1 / 1000       # Keep material shaping (max ~125)
 MAX_STEPS = 100
 
 class MinichessEnv(gym.Env):
@@ -48,6 +48,7 @@ class MinichessEnv(gym.Env):
         return self._obs(), {}
 
     def step(self, action):
+        self.steps += 1
         info = {}
 
         # -------------------------
@@ -55,42 +56,35 @@ class MinichessEnv(gym.Env):
         # -------------------------
         if action not in self.legal_moves:
             info["move"] = "invalid"
-            reward = -0.01#INVALID_MOVE_REWARD
-            done = False  # Keep episode going so agent can learn to avoid bad moves
-            truncated = False
+            reward = INVALID_MOVE_REWARD
+            done = False  # Keep episode going for agent to learn
+            truncated = self.steps >= MAX_STEPS
             return self._obs(), reward, done, truncated, info
 
         # -------------------------
         # 2️⃣ PLAYER MOVE
         # -------------------------
         self.board, self.player = self.game.getNextState(self.board, self.player, action)
-        reward = 0
-        # reward += VALID_MOVE_REWARD  # Reward for valid move
-        
-        # Check game status after player's move
-        # game_result = self.game.getGameEnded(self.board, 1)
-        # done = game_result != 0
-        
-        reward = self.game.getGameEnded(self.board, 1)       
-        done = reward != 0 
-        
-        # if done:
-        #     # Terminal reward
-        if reward == 1:  # Agent wins
-            # reward = CHECKMATE_REWARD
-            info["result"] = "win"
-        elif reward < 0:  # Agent loses
-            # reward = -CHECKMATE_REWARD
-            info["result"] = "loss"
-        elif reward == 1e-4:
-           # Draw
-            # reward+= DRAW_REWARD
-            print(f"draw1: {reward}")
-            info["result"] = "draw"
-        
+        reward = VALID_MOVE_REWARD  # Reward for making a valid move
 
-        # # Shaping reward for CHECK after player's move
-        # if not done and AbstractActionFlags.CHECK in board_instance.peek().modifier_flags:
+        # Check game status after player's move
+        game_result = self.game.getGameEnded(self.board, 1)
+        done = game_result != 0
+
+        if done:
+            # Terminal reward
+            if game_result >= 1:  # Agent wins
+                reward += CHECKMATE_REWARD
+                info["result"] = "win"
+            elif game_result < 0:  # Agent loses
+                reward -= CHECKMATE_REWARD
+                info["result"] = "loss"
+            elif game_result == 0.5:  # Draw
+                reward += DRAW_REWARD
+                info["result"] = "draw"
+
+        # # Add CHECK reward (only if game not finished)
+        # if not done and AbstractActionFlags.CHECK in self.board.peek().modifier_flags:
         #     reward += CHECK_REWARD
 
         # -------------------------
@@ -102,25 +96,21 @@ class MinichessEnv(gym.Env):
                 move = random.choice(legal_moves)
                 self.board, self.player = self.game.getNextState(self.board, self.player, move)
 
-                # Check game status after opponent's move
-                # game_result = self.game.getGameEnded(self.board, 1)
-                # done = game_result != 0
-                reward = self.game.getGameEnded(self.board, 1)
-                done = reward != 0
-                
-                if done:                  
-                    if reward == 1:
-                        # reward += CHECKMATE_REWARD
+                game_result = self.game.getGameEnded(self.board, 1)
+                done = game_result != 0
+
+                if done:
+                    if game_result >= 1:  # Opponent move leads to agent win
+                        reward += CHECKMATE_REWARD
                         info["result"] = "win"
-                    elif reward < 0:
-                        # reward -= CHECKMATE_REWARD
+                    elif game_result < 0:  # Opponent move leads to agent loss
+                        reward -= CHECKMATE_REWARD
                         info["result"] = "loss"
-                    elif reward == 1e-4:
-                        # reward+= DRAW_REWARD
-                        print(f"draw2: {reward}")
+                    elif game_result == 0.5:  # Draw
+                        reward += DRAW_REWARD
                         info["result"] = "draw"
 
-                # # If opponent gave a CHECK → negative reward for agent
+                # # If opponent gave CHECK → negative reward
                 # if AbstractActionFlags.CHECK in self.board.peek().modifier_flags:
                 #     reward -= CHECK_REWARD
 
@@ -128,18 +118,18 @@ class MinichessEnv(gym.Env):
         # 4️⃣ MATERIAL REWARD SHAPING
         # -------------------------
         obs = self._obs()
-        reward = np.sum(obs["board"]) * MATERIAL_SCALE
+        reward += np.sum(obs["board"]) * MATERIAL_SCALE
 
         # -------------------------
         # 5️⃣ STEP MGMT
         # -------------------------
         self.legal_moves = self._get_legal_actions()
         self.legal_moves_one_hot = self._get_legal_actions(return_type="one_hot")
-        self.steps += 1
+        # self.steps += 1
         truncated = self.steps >= MAX_STEPS
 
         info["move"] = "valid"
-        return obs, reward, done, truncated, info
+        return obs, reward, done, truncated, info    
 
 
     def _get_legal_actions(self, return_type="list"):

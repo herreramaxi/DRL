@@ -13,8 +13,8 @@ from stable_baselines3.common.callbacks import BaseCallback
 # ✅ Hyperparameters
 MODEL_PATH = "ppo_chess.zip"
 LOG_DIR = "./chess_logs"
-TOTAL_TIMESTEPS = 100_000  # ✅ Increased for meaningful training
-N_ENVS = 8  # ✅ Parallel envs for speed
+TOTAL_TIMESTEPS = 200_000  # ✅ Increased for meaningful training
+N_ENVS = 10  # ✅ Parallel envs for speed
 N_STEPS = 2048  # ✅ More stable with PPO
 BATCH_SIZE = 512  # ✅ Must divide n_steps * n_envs (2048 * 8 = 16384)
 N_EPOCHS = 10  # ✅ PPO update passes

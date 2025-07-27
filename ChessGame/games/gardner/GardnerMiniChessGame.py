@@ -148,7 +148,8 @@ class GardnerMiniChessGame(Game):
         if b.has_legal_moves(player):
             return 0
         # draw has a very little value
-        return 1e-4
+        # return 1e-4
+        return 0.5
 
     def getCanonicalForm(self, board, player):
         # return state if player==1, else return -state if player==-1
