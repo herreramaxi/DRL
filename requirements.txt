@@ -1,0 +1,8 @@
+torch
+gymnasium
+pygame
+box2d
+tqdm
+matplotlib
+stable-baselines3[extra]
+tensorboard
