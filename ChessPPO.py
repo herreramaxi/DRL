@@ -13,7 +13,7 @@ from stable_baselines3.common.callbacks import BaseCallback
 # ✅ Hyperparameters
 MODEL_PATH = "ppo_chess.zip"
 LOG_DIR = "./chess_logs"
-TOTAL_TIMESTEPS = 200_000  # ✅ Increased for meaningful training
+TOTAL_TIMESTEPS = 100_000  # ✅ Increased for meaningful training
 N_ENVS = 8  # ✅ Parallel envs for speed
 N_STEPS = 2048  # ✅ More stable with PPO
 BATCH_SIZE = 512  # ✅ Must divide n_steps * n_envs (2048 * 8 = 16384)
@@ -25,11 +25,19 @@ class WinRateCallback(BaseCallback):
         super().__init__(verbose)
         self.log_interval = log_interval
         self.wins, self.losses, self.draws = 0, 0, 0
+        self.invalid_moves = 0
+        self.valid_moves = 0
         self.episodes = 0
 
     def _on_step(self) -> bool:
         # Check infos from vectorized env
         for info in self.locals.get("infos", []):
+            if "move" in info:
+                if info["move"] == "invalid":
+                   self.invalid_moves += 1
+                else:
+                     self.valid_moves += 1
+
             if "result" in info:  # Our env provides result
                 self.episodes += 1
                 if info["result"] == "win":
@@ -41,6 +49,8 @@ class WinRateCallback(BaseCallback):
 
         if self.num_timesteps % self.log_interval == 0 and self.episodes > 0:
             win_rate = self.wins / self.episodes
+            self.logger.record("custom/invalid_moves", self.invalid_moves)
+            self.logger.record("custom/valid_moves", self.valid_moves)
             self.logger.record("custom/win_rate", win_rate)
             self.logger.record("custom/episodes", self.episodes)
             self.logger.record("custom/wins", self.wins)
@@ -97,3 +107,5 @@ if __name__ == "__main__":  # ✅ Required for Windows
         mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
         print(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
 
+
+# tensorboard --logdir=./chess_logs 

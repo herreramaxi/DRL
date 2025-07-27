@@ -1,6 +1,6 @@
-from game.abstract.resources import BLACK_BISHOP, WHITE_BISHOP
+from ChessGame.game.abstract.resources import BLACK_BISHOP, WHITE_BISHOP
 import numpy as np
-from game.abstract.piece import AbstractChessPiece, PieceColor
+from ChessGame.game.abstract.piece import AbstractChessPiece, PieceColor
 
 class Bishop(AbstractChessPiece):
     def __init__(self, color: PieceColor, position: tuple, value: int) -> None:

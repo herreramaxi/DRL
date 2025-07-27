@@ -1,6 +1,6 @@
 import numpy as np
-from game.abstract.piece import AbstractChessPiece, PieceColor
-from game.abstract.resources import BLACK_PAWN, WHITE_PAWN
+from ChessGame.game.abstract.piece import AbstractChessPiece, PieceColor
+from ChessGame.game.abstract.resources import BLACK_PAWN, WHITE_PAWN
 
 class Pawn(AbstractChessPiece):
     def __init__(self, color: PieceColor, position: tuple, value: int) -> None:

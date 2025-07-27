@@ -1,13 +1,13 @@
-from game.pieces import King
-from game.abstract.board import AbstractChessBoard
-from game.abstract.piece import AbstractChessPiece
-from game.abstract.board import AbstractChessBoard
-from game.abstract.piece import AbstractChessPiece
+
+from ChessGame.game.abstract.board import AbstractChessBoard
+from ChessGame.game.abstract.piece import AbstractChessPiece
 
 import numpy as np
 
 from typing import List, Union
 from enum import Enum
+
+from ChessGame.game.pieces.king import King
 
 class AbstractActionFlags(Enum):
     PROMOTE_ROOK = 0

@@ -1,6 +1,6 @@
 import enum
-from game.abstract.piece import AbstractChessPiece, PieceColor
-from game.abstract.resources import *
+from ChessGame.game.abstract.piece import AbstractChessPiece, PieceColor
+from ChessGame.game.abstract.resources import *
 
 import numpy as np
 

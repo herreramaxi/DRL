@@ -1,10 +1,26 @@
 from typing import Optional
 import random
+# from ChessGame.game.abstract.action import AbstractActionFlags
+from ChessGame.game.abstract.action import AbstractActionFlags
+from ChessGame.game.abstract.piece import PieceColor
 import gymnasium as gym
 from gymnasium.spaces import Discrete, Dict, Box
 import numpy as np
 
 from ChessGame.games.gardner.GardnerMiniChessGame import GardnerMiniChessGame
+
+# CHECKMATE_REWARD = 25_000
+# CHECK_REWARD = 500
+# INVALID_MOVE_REWARD = -1000
+
+# Constants for reward shaping
+INVALID_MOVE_REWARD = -50000
+VALID_MOVE_REWARD = 10
+CHECK_REWARD = 500
+CHECKMATE_REWARD = 25000
+DRAW_REWARD = 10000
+MATERIAL_SCALE = 1 / 1000  # Scale for material shaping
+MAX_STEPS = 100
 
 class MinichessEnv(gym.Env):
     def __init__(self, size: int = 5) -> None:
@@ -25,7 +41,7 @@ class MinichessEnv(gym.Env):
         super().reset(seed=seed)
         self.game = GardnerMiniChessGame()
         self.board = self.game.getInitBoard()
-        self.player = 1
+        self.player = 1 #White: 1, Black: -1
         self.legal_moves = self._get_legal_actions()
         self.legal_moves_one_hot = self._get_legal_actions(return_type="one_hot")
         self.steps = 0
@@ -34,53 +50,95 @@ class MinichessEnv(gym.Env):
     def step(self, action):
         info = {}
 
+        # -------------------------
+        # 1️⃣ INVALID MOVE HANDLING
+        # -------------------------
         if action not in self.legal_moves:
-            # Invalid action: penalize agent and end the game
-            reward = -1.0
-            done = True
+            info["move"] = "invalid"
+            reward = -0.01#INVALID_MOVE_REWARD
+            done = False  # Keep episode going so agent can learn to avoid bad moves
             truncated = False
-            info["result"] = "loss"  # Invalid move = loss
             return self._obs(), reward, done, truncated, info
 
-        # Apply player's move
+        # -------------------------
+        # 2️⃣ PLAYER MOVE
+        # -------------------------
         self.board, self.player = self.game.getNextState(self.board, self.player, action)
-        reward = self.game.getGameEnded(self.board, 1)
-        done = reward != 0
+        reward = 0
+        # reward += VALID_MOVE_REWARD  # Reward for valid move
+        
+        # Check game status after player's move
+        # game_result = self.game.getGameEnded(self.board, 1)
+        # done = game_result != 0
+        
+        reward = self.game.getGameEnded(self.board, 1)       
+        done = reward != 0 
+        
+        # if done:
+        #     # Terminal reward
+        if reward == 1:  # Agent wins
+            # reward = CHECKMATE_REWARD
+            info["result"] = "win"
+        elif reward < 0:  # Agent loses
+            # reward = -CHECKMATE_REWARD
+            info["result"] = "loss"
+        elif reward == 1e-4:
+           # Draw
+            # reward+= DRAW_REWARD
+            print(f"draw1: {reward}")
+            info["result"] = "draw"
+        
 
-        if done:
-            # Assign result for PPO callback
-            if reward > 0:
-                info["result"] = "win"
-            elif reward < 0:
-                info["result"] = "loss"
-            else:
-                info["result"] = "draw"
+        # # Shaping reward for CHECK after player's move
+        # if not done and AbstractActionFlags.CHECK in board_instance.peek().modifier_flags:
+        #     reward += CHECK_REWARD
 
+        # -------------------------
+        # 3️⃣ OPPONENT MOVE
+        # -------------------------
         if not done:
-            # Opponent plays random move
             legal_moves = list(self._get_legal_actions())
-            move = random.choice(legal_moves)
-            self.board, self.player = self.game.getNextState(self.board, self.player, move)
-            reward = self.game.getGameEnded(self.board, 1)
-            done = reward != 0
-            if done:
-                if reward > 0:
-                    info["result"] = "win"
-                elif reward < 0:
-                    info["result"] = "loss"
-                else:
-                    info["result"] = "draw"
+            if legal_moves:
+                move = random.choice(legal_moves)
+                self.board, self.player = self.game.getNextState(self.board, self.player, move)
 
+                # Check game status after opponent's move
+                # game_result = self.game.getGameEnded(self.board, 1)
+                # done = game_result != 0
+                reward = self.game.getGameEnded(self.board, 1)
+                done = reward != 0
+                
+                if done:                  
+                    if reward == 1:
+                        # reward += CHECKMATE_REWARD
+                        info["result"] = "win"
+                    elif reward < 0:
+                        # reward -= CHECKMATE_REWARD
+                        info["result"] = "loss"
+                    elif reward == 1e-4:
+                        # reward+= DRAW_REWARD
+                        print(f"draw2: {reward}")
+                        info["result"] = "draw"
+
+                # # If opponent gave a CHECK → negative reward for agent
+                # if AbstractActionFlags.CHECK in self.board.peek().modifier_flags:
+                #     reward -= CHECK_REWARD
+
+        # -------------------------
+        # 4️⃣ MATERIAL REWARD SHAPING
+        # -------------------------
+        obs = self._obs()
+        reward = np.sum(obs["board"]) * MATERIAL_SCALE
+
+        # -------------------------
+        # 5️⃣ STEP MGMT
+        # -------------------------
         self.legal_moves = self._get_legal_actions()
         self.legal_moves_one_hot = self._get_legal_actions(return_type="one_hot")
-        obs = self._obs()
-
-        # Optional shaping: tiny reward for board material
-        reward = np.sum(obs["board"]) / 1000
-
         self.steps += 1
-        truncated = self.steps >= 100
+        truncated = self.steps >= MAX_STEPS
 
+        info["move"] = "valid"
         return obs, reward, done, truncated, info
 
 

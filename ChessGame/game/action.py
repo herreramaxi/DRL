@@ -1,9 +1,9 @@
 from typing import List, Tuple, Union
-from game.abstract.board import AbstractChessBoard
-from game.abstract.piece import AbstractChessPiece, PieceColor
-from game.pieces import Pawn, Knight, Bishop, Rook, Queen, King
-from game.abstract.action import AbstractActionFlags, AbstractChessAction, AbstractChessActionVisitor, visitor
-from game.action_reference import ID_TO_ACTION, ACTION_TO_ID, ID_TO_ACTION_BY_TILE, ID_TO_ACTION_BY_TILE
+from ChessGame.game.abstract.board import AbstractChessBoard
+from ChessGame.game.abstract.piece import AbstractChessPiece, PieceColor
+from ChessGame.game.pieces import Pawn, Knight, Bishop, Rook, Queen, King
+from ChessGame.game.abstract.action import AbstractActionFlags, AbstractChessAction, AbstractChessActionVisitor, visitor
+from ChessGame.game.action_reference import ID_TO_ACTION, ACTION_TO_ID, ID_TO_ACTION_BY_TILE, ID_TO_ACTION_BY_TILE
 
 import numpy as np
 
