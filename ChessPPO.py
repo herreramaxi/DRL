@@ -62,7 +62,7 @@ class WinRateCallback(BaseCallback):
 
 
 # ✅ Check CUDA availability
-is_cuda_available()
+cuda_available = is_cuda_available()
 register_chess_env()
 
 # ✅ Create environment
@@ -93,7 +93,7 @@ if __name__ == "__main__":  # ✅ Required for Windows
         ent_coef=0.01,             # Encourages exploration
         vf_coef=0.5,               # Value loss coefficient (default)
         max_grad_norm=0.5,
-        device="cuda" if is_cuda_available() else "cpu",
+        device="cuda" if cuda_available else "cpu",
         tensorboard_log=LOG_DIR)
         
         callback = WinRateCallback(log_interval=5000)
