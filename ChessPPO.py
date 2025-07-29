@@ -7,13 +7,14 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import SubprocVecEnv
-
+from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.callbacks import BaseCallback
+from torchinfo import summary
 
 # ✅ Hyperparameters
 MODEL_PATH = "ppo_chess.zip"
 LOG_DIR = "./chess_logs"
-TOTAL_TIMESTEPS = 200_000  # ✅ Increased for meaningful training
+TOTAL_TIMESTEPS = 1_000_000  # ✅ Increased for meaningful training
 N_ENVS = 10  # ✅ Parallel envs for speed
 N_STEPS = 2048  # ✅ More stable with PPO
 BATCH_SIZE = 512  # ✅ Must divide n_steps * n_envs (2048 * 8 = 16384)
@@ -96,6 +97,8 @@ if __name__ == "__main__":  # ✅ Required for Windows
         device="cuda" if cuda_available else "cpu",
         tensorboard_log=LOG_DIR)
         
+        summary(model.policy)
+
         callback = WinRateCallback(log_interval=5000)
         model.learn(total_timesteps=TOTAL_TIMESTEPS, tb_log_name="PPO_Chess",callback=callback)
         model.save(MODEL_PATH)

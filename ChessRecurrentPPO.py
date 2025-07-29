@@ -15,6 +15,7 @@ from stable_baselines3.common.callbacks import BaseCallback
 
 from gymnasium import ObservationWrapper
 from gymnasium.spaces import Box
+from torchinfo import summary
 
 # ✅ Hyperparameters
 MODEL_PATH = "ppo_recurrent_chess.zip"
@@ -87,6 +88,8 @@ if __name__ == "__main__":  # ✅ Required for Windows
         max_grad_norm=0.5,
         device="cuda" if cuda_available else "cpu",
         tensorboard_log=LOG_DIR)
+
+        summary(model.policy)
         
         callback = WinRateCallback(log_interval=5000)
         model.learn(total_timesteps=TOTAL_TIMESTEPS, tb_log_name="RecurrentPPO_Chess",callback=callback)

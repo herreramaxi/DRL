@@ -19,3 +19,4 @@ dependencies:
       - stable-baselines3[extra]
       - sb3_contrib
       - tensorboard  
+      - torchinfo

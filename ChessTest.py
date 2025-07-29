@@ -29,24 +29,52 @@
 
 # env.close()
 
+import random
 from ChessGame.ChessEnv import register_chess_env
 import gymnasium as gym
-import random
+
 
 register_chess_env()
+# env = gym.make("gymnasium_env/ChessGame-v0")
+
+# obs, info = env.reset()
+# unwrapped = env.unwrapped
+
+# env.render()  # <-- Show initial board
+
+# for _ in range(5):
+#     legal_moves = unwrapped.get_legal_moves()
+#     action = random.choice(legal_moves)  # pick only valid moves
+#     obs, reward, terminated, truncated, info = env.step(action)
+#     unwrapped.render()  # <-- Show board after each move
+#     print(f"Action: {action}, Reward: {reward}, Terminated: {terminated}")
+#     if terminated or truncated:
+#         break
+
+# env.close()
+
+
+
 env = gym.make("gymnasium_env/ChessGame-v0")
 
 obs, info = env.reset()
 unwrapped = env.unwrapped
 
-env.render()  # <-- Show initial board
 
-for _ in range(5):
+env.render()  # <-- Show initial board
+print("Observation space:", env.observation_space)
+print("Action space:", env.action_space)
+
+for _ in range(2):
     legal_moves = unwrapped.get_legal_moves()
-    action = random.choice(legal_moves)  # pick only valid moves
+    legal_moves = list(legal_moves)  # Convert set to list
+    if not legal_moves:
+        print("No legal moves available.")
+        break
+    action = random.choice(legal_moves)  # Pick a valid move
     obs, reward, terminated, truncated, info = env.step(action)
     unwrapped.render()  # <-- Show board after each move
-    print(f"Action: {action}, Reward: {reward}, Terminated: {terminated}")
+    print(f"Action: {action}, Reward: {reward}, Terminated: {terminated}, Truncated: {truncated}")
     if terminated or truncated:
         break
 
