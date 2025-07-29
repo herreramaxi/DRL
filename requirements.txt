@@ -8,3 +8,4 @@ stable-baselines3[extra]
 tensorboard
 sb3_contrib
 torchinfo
+transformers

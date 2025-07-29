@@ -20,7 +20,7 @@ from torchinfo import summary
 # ✅ Hyperparameters
 MODEL_PATH = "ppo_recurrent_chess.zip"
 LOG_DIR = "./chess_logs"
-TOTAL_TIMESTEPS = 100_000  # ✅ Increased for meaningful training
+TOTAL_TIMESTEPS = 1_000_000  # ✅ Increased for meaningful training
 N_ENVS = 10  # ✅ Parallel envs for speed
 N_STEPS = 2048  # ✅ More stable with PPO
 BATCH_SIZE = 512  # ✅ Must divide n_steps * n_envs (2048 * 8 = 16384)

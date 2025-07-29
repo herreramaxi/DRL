@@ -20,3 +20,4 @@ dependencies:
       - sb3_contrib
       - tensorboard  
       - torchinfo
+      - transformers
