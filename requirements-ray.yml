@@ -1,0 +1,22 @@
+name: gymnasium-ray-env
+channels:
+  - nvidia
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pytorch
+  # - torchvision
+  # - torchaudio
+  - pytorch-cuda=12.1 
+  - pip
+  - pip:
+      - gymnasium
+      - pygame
+      - box2d
+      - tqdm
+      - matplotlib
+      - tensorboard  
+      - torchinfo
+      - transformers      
+      - "ray[rllib]"

@@ -23,7 +23,9 @@ MATERIAL_SCALE = 1 / 1000       # Keep material shaping (max ~125)
 MAX_STEPS = 100
 
 class MinichessEnv(gym.Env):
-    def __init__(self, size: int = 5) -> None:
+    def __init__(self, size: int = 5, invalid_action_masking = False) -> None:
+        print(f"Initializing MiniChessEnv: {size}x{size} board with invalid action masking ={invalid_action_masking}")
+        self.invalid_action_masking = invalid_action_masking
         self.game = GardnerMiniChessGame()
         self.board = self.game.getInitBoard()
         self.player = 1
@@ -32,10 +34,17 @@ class MinichessEnv(gym.Env):
         
         self.steps = 0
         self.action_space = Discrete(self.game.getActionSize())
-        self.observation_space = Dict({
-            "board": Box(-60000, 60000, shape=(5,5), dtype=np.float32),
-            "actions": Box(0, 1, shape=(self.action_space.n,), dtype=np.float32),
-        })
+      
+        if(invalid_action_masking):
+            # Masking invalid actions
+            self.observation_space = Dict({
+                "board": Box(-60000, 60000, shape=(5,5), dtype=np.float32),
+            })
+        else:
+            self.observation_space = Dict({
+                "board": Box(-60000, 60000, shape=(5,5), dtype=np.float32),
+                "actions": Box(0, 1, shape=(self.action_space.n,), dtype=np.float32),
+            })
 
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
         super().reset(seed=seed)
@@ -55,6 +64,14 @@ class MinichessEnv(gym.Env):
         # 1️⃣ INVALID MOVE HANDLING
         # -------------------------
         if action not in self.legal_moves:
+            if(self.invalid_action_masking):
+                print("action", action,"not in", self.legal_moves)
+                # print([self.game.id_to_action[move] for move in self.legal_moves])
+                print(self.game.display(self.board,self.player))
+                print(self.player)
+                print(self.game.id_to_action[action], "BAD ACTION")
+                assert self.invalid_action_masking, "Invalid action masking is enabled but action is not in legal moves."
+
             info["move"] = "invalid"
             reward = INVALID_MOVE_REWARD
             done = False  #It seems is better to not end the game on invalid move
@@ -135,11 +152,25 @@ class MinichessEnv(gym.Env):
     def _get_legal_actions(self, return_type="list"):
         legal_moves = self.game.getValidMoves(self.board, self.player, return_type=return_type)
         return set(legal_moves) if return_type == "list" else legal_moves
+    
+    # ------------------------------------------------------------------
+    # Maskable PPO will call this every time it needs the action mask.
+    # It MUST return a 1‑D boolean array of length == action_space.n
+    # ------------------------------------------------------------------
+    def action_masks(self) -> np.ndarray:
+        # `legal_moves_one_hot` is already a 0/1 vector the same length
+        # as the action space, so we just cast it to bool.
+        return np.array(self.legal_moves_one_hot, dtype=bool)
+
 
     def get_legal_moves(self):
         return self._get_legal_actions(return_type="list")
 
     def _obs(self):
+        if self.invalid_action_masking:
+            board = np.array(self.board, dtype=np.float32)
+            return {"board": board}
+        
         board = np.array(self.board, dtype=np.float32)
         mask = np.array(self.legal_moves_one_hot, dtype=np.float32)
         return {"board": board, "actions": mask}
@@ -154,5 +185,5 @@ def register_chess_env():
         gym.register(
             id="gymnasium_env/ChessGame-v0",
             entry_point="ChessGame.ChessEnv:MinichessEnv",
-            max_episode_steps=300,
+            max_episode_steps=300          
         )
