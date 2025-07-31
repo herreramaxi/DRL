@@ -2,15 +2,15 @@ import os
 import torch
 import torch.nn as nn
 from ChessGame.ChessEnv import register_chess_env
+from ChessMaskablePPO import make_env_masking_enabled
 from ChessPPO import WinRateCallback
 from cudaCheck import is_cuda_available
 import gymnasium as gym
-from stable_baselines3 import PPO
-from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
+from sb3_contrib.common.maskable.evaluation import evaluate_policy
+from sb3_contrib import MaskablePPO     
 from torchinfo import summary
 
 # ✅ Hyperparameters
@@ -25,11 +25,6 @@ N_EPOCHS = 10
 # ✅ CUDA check
 cuda_available = is_cuda_available()
 register_chess_env()
-
-# ✅ Create environment
-def make_env():
-    env = gym.make("gymnasium_env/ChessGame-v0")
-    return Monitor(env)
 
 # ✅ Autoencoder definition
 class BoardAutoencoder(nn.Module):
@@ -66,7 +61,7 @@ class AutoencoderFeatureExtractor(BaseFeaturesExtractor):
         return self.encoder(x)
 
 if __name__ == "__main__":
-    env = make_vec_env(make_env, n_envs=N_ENVS, vec_env_cls=SubprocVecEnv)
+    env = make_vec_env(make_env_masking_enabled, n_envs=N_ENVS, vec_env_cls=SubprocVecEnv)
 
     print("Observation space:", env.observation_space)
     print("Action space:", env.action_space)
@@ -82,8 +77,8 @@ if __name__ == "__main__":
         )
 
         print("Training PPO-AE agent with GPU and parallel environments...")
-        model = PPO(
-            policy="MultiInputPolicy",
+        model = MaskablePPO(
+            policy="MlpPolicy",
             env=env,
             verbose=1,
             learning_rate=1e-4,
@@ -110,7 +105,7 @@ if __name__ == "__main__":
         del model
 
         # ✅ Load and evaluate
-        model = PPO.load(MODEL_PATH, env=env)
+        model = MaskablePPO.load(MODEL_PATH, env=env)
         print("Evaluating PPO-AE agent...")
         mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
         print(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")

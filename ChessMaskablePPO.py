@@ -3,8 +3,6 @@ from ChessGame.ChessEnv import register_chess_env
 from ChessPPO import WinRateCallback
 from cudaCheck import is_cuda_available
 import gymnasium as gym
-from stable_baselines3 import PPO
-from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import SubprocVecEnv
@@ -31,22 +29,23 @@ cuda_available = is_cuda_available()
 register_chess_env()
 
 # ✅ Create environment
-def make_env():
+def make_env_masking_enabled():
     env =  gym.make("gymnasium_env/ChessGame-v0",invalid_action_masking=True)
     return Monitor(env)
 
 if __name__ == "__main__":  # ✅ Required for Windows
     # ✅ Create SubprocVecEnv for parallel environments
-    env = make_vec_env(make_env, n_envs=N_ENVS, vec_env_cls=SubprocVecEnv)
+    env = make_vec_env(make_env_masking_enabled, n_envs=N_ENVS, vec_env_cls=SubprocVecEnv)
 
     print("Observation space:", env.observation_space)
     print("Action space:", env.action_space)
 
     if not os.path.exists(MODEL_PATH):
         print("Training PPO agent with GPU and parallel environments...")
-        model = MaskablePPO(                          # ⬅️ class changed
-        policy="MultiInputPolicy",                # this automatically picks
-        env=env,                                  # MaskableMultiInputPolicy
+        model = MaskablePPO(                     
+        # policy="MultiInputPolicy",              
+        policy="MlpPolicy", 
+        env=env,                              
         learning_rate=1e-4,
         n_steps=N_STEPS,
         batch_size=BATCH_SIZE,
