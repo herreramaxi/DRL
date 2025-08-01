@@ -18,8 +18,9 @@ from sb3_contrib.common.maskable.evaluation import evaluate_policy
 # ✅ Hyperparameters
 MODEL_PATH = "maskablePPO_chess.zip"
 LOG_DIR = "./chess_logs"
-TOTAL_TIMESTEPS = 1_000_000  # ✅ Increased for meaningful training
-N_ENVS = 10  # ✅ Parallel envs for speed
+# TOTAL_TIMESTEPS = 1_000_000  # ✅ Increased for meaningful training
+TOTAL_TIMESTEPS = 1_000  # ✅ Increased for meaningful training
+N_ENVS = 1  # ✅ Parallel envs for speed
 N_STEPS = 2048  # ✅ More stable with PPO
 BATCH_SIZE = 512  # ✅ Must divide n_steps * n_envs (2048 * 8 = 16384)
 N_EPOCHS = 10  # ✅ PPO update passes
@@ -43,8 +44,8 @@ if __name__ == "__main__":  # ✅ Required for Windows
     if not os.path.exists(MODEL_PATH):
         print("Training PPO agent with GPU and parallel environments...")
         model = MaskablePPO(                     
-        # policy="MultiInputPolicy",              
-        policy="MlpPolicy", 
+        policy="MultiInputPolicy",              
+        # policy="MlpPolicy", 
         env=env,                              
         learning_rate=1e-4,
         n_steps=N_STEPS,
@@ -76,13 +77,24 @@ if __name__ == "__main__":  # ✅ Required for Windows
     print(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
 
     # ---------- manual play loop ----------
-    # obs = env.reset()
-    # while True:
-    #     unwrapped= env.unwrapped
-    #     action_masks = get_action_masks(env) 
-    #     action, _ = model.predict(obs, action_masks=action_masks, deterministic=False)
-    #     obs, reward, terminated, truncated, info = unwrapped.step(action) # return obs, reward, done, truncated, info    
-    #     # print(obs, reward, terminated, truncated )
-    #     if terminated.any() or truncated.any():
-    #         break
+    env = gym.make("gymnasium_env/ChessGame-v0", invalid_action_masking=True)
+    obs, _ = env.reset() 
+    env.render() 
+    
+    while True:      
+        action_masks = get_action_masks(env) 
+        action_arr, _  = model.predict(obs, action_masks=action_masks, deterministic=False)
+        
+        # unpack the single element
+        action = int(action_arr)   # or action_arr[0]
+        if action_masks[action] == 0:
+        # definitely invalid
+            print("⚠️  Agent picked a masked-out action:", env.unwrapped.game.id_to_action[action])
+            
+        obs, reward, terminated, truncated, info = env.step(action) # return obs, reward, done, truncated, info    
+        print("move:",  info["chess_move"]) 
+        env.render() 
+        # print(obs, reward, terminated, truncated )
+        if terminated or truncated:
+            break
 # tensorboard --logdir=./chess_logs 

@@ -167,6 +167,57 @@ class GardnerMiniChessGame(Game):
     def display(self, board, player):
         return Board(self.n, board).display(player)
 
+    def get_action_humanized(self, action_id, player):                
+        action = self.id_to_action[action_id]
+        if action is None:
+            return "Invalid Action"
+        
+        piece = action[0]
+        piece_humanized = self.get_piece_humamized(piece, player)
+        source = self.get_position_humanized(action[1])
+        target = self.get_position_humanized(action[2])
+        return f"{piece_humanized} {source}-{target}"
+    
+    square_map = {
+        15: "a5", 16: "b5", 17: "c5", 18: "d5", 19: "e5",
+        22: "a4", 23: "b4", 24: "c4", 25: "d4", 26: "e4",
+        29: "a3", 30: "b3", 31: "c3", 32: "d3", 33: "e3",
+        36: "a2", 37: "b2", 38: "c2", 39: "d2", 40: "e2",
+        43: "a1", 44: "b1", 45: "c1", 46: "d1", 47: "e1"}
+    def get_position_humanized(self, position):
+        return self.square_map.get(position, "Invalid Position")
+
+    def get_piece_humamized(self, piece, player):
+        if player == 1:
+            if piece == Board.ROOK:
+                return '♖'
+            elif piece == Board.KNIGHT:
+                return '♘'
+            elif piece == Board.BISHOP:
+                return '♗'
+            elif piece == Board.QUEEN:
+                return '♕'
+            elif piece == Board.KING:
+                return '♔'
+            elif piece == Board.PAWN:
+                return '♙'
+            else:
+                return "Unknown Piece"
+        else: # player == -1
+            if piece == Board.ROOK:
+                return '♜'
+            elif piece == Board.KNIGHT:
+                return '♞'
+            elif piece == Board.BISHOP:
+                return '♝'
+            elif piece == Board.QUEEN:
+                return '♛'
+            elif piece == Board.KING:
+                return '♚'
+            elif piece == Board.PAWN:
+                return '♟'   
+            else:
+                return "Unknown Piece"
 
 def display(game,board,player):
     Board(game.n,board).display(player)

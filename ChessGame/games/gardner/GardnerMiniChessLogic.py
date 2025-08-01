@@ -59,17 +59,18 @@ class Board:
         self.kp = 0
 
         # Chess GRID with Padding and Cell Number
-        # [0,  1,  2,  3,  4,  5,  6]
-        # [7,  8,  9,  10, 11, 12, 13]
+        # -  [0,  1,  2,  3,  4,  5,  6]
+        # -  [7,  8,  9,  10, 11, 12, 13]
 
-        # [14,   15, 16, 17, 18, 19,     20]
-        # [21,   22, 23, 24, 25, 26,     27]
-        # [28,   29, 30, 31, 32, 33,     34]
-        # [35,   36, 37, 38, 39, 40,     41]
-        # [42,   43, 44, 45, 46, 47,     48]
-
-        # [49, 50, 51, 52, 53, 54, 55]
-        # [56, 57, 58, 59, 60, 61, 62]
+        # 5  [14,   15, 16, 17, 18, 19,     20]
+        # 4  [21,   22, 23, 24, 25, 26,     27]
+        # 3  [28,   29, 30, 31, 32, 33,     34]
+        # 2  [35,   36, 37, 38, 39, 40,     41]
+        # 1  [42,   43, 44, 45, 46, 47,     48]
+        #     --     a   b   c   d   e   	--
+        
+        # -  [49, 50, 51, 52, 53, 54, 55]
+        # -  [56, 57, 58, 59, 60, 61, 62]
 
         self.north, self.east, self.south, self.west = -(self.n+2), 1, (self.n+2), -1
         self.directions = {
@@ -253,10 +254,14 @@ class Board:
         if player < 0: result = result[::-1]
         color_output = False
         s = ''
+        rank = 5 
 
         for row in result:
-            s += SPACE.join([uni_pieces[tile] for tile in row])
+            s += (str(rank) + SPACE.join([uni_pieces[tile] for tile in row]))          
             s += '\n'
+            rank-=1
+
+        s += " a b c d e "
         return s
         # print(' ', self.n - i, ' '.join(uni_pieces.get(p, p) for p in row))
         for i, row in enumerate(result):
@@ -277,4 +282,4 @@ class Board:
             print(out)
         for i in range(6): sys.stdout.write("\033[F")  # Cursor up one line
         # time.sleep(1)
-        # print('    a  b  c  d  e  \n\n')
+        # print('    a  b  c  d  e  \n\n')   

@@ -57,7 +57,7 @@ class WinRateCallback(BaseCallback):
             self.logger.record("custom/wins", self.wins)
             self.logger.record("custom/losses", self.losses)
             self.logger.record("custom/draws", self.draws)
-            print(f"[Step {self.num_timesteps}] Win rate: {win_rate:.2f}")
+            # print(f"[Step {self.num_timesteps}] Win rate: {win_rate:.2f}")
 
         return True
 

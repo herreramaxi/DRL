@@ -73,6 +73,7 @@ class MinichessEnv(gym.Env):
                 assert self.invalid_action_masking, "Invalid action masking is enabled but action is not in legal moves."
 
             info["move"] = "invalid"
+            info["chess_move"] = self.get_action_humanized(action, 1)
             reward = INVALID_MOVE_REWARD
             done = False  #It seems is better to not end the game on invalid move
             truncated = self.steps >= MAX_STEPS
@@ -81,6 +82,7 @@ class MinichessEnv(gym.Env):
         # -------------------------
         # 2️⃣ PLAYER MOVE
         # -------------------------
+        info["chess_move"] = self.get_action_humanized(action, 1)
         self.board, self.player = self.game.getNextState(self.board, self.player, action)
         reward = VALID_MOVE_REWARD  # Reward for making a valid move
 
@@ -110,9 +112,9 @@ class MinichessEnv(gym.Env):
         if not done:
             legal_moves = list(self._get_legal_actions())
             if legal_moves:
-                move = random.choice(legal_moves)
+                move = random.choice(legal_moves)                
                 self.board, self.player = self.game.getNextState(self.board, self.player, move)
-
+                info["chess_move"] =  info["chess_move"] + " , " + self.get_action_humanized(move, -1)
                 game_result = self.game.getGameEnded(self.board, 1)
                 done = game_result != 0
 
@@ -148,6 +150,10 @@ class MinichessEnv(gym.Env):
         info["move"] = "valid"
         return obs, reward, done, truncated, info    
 
+
+    def get_action_humanized(self, action_id, player):                
+       action = self.game.get_action_humanized(action_id, player)
+       return action
 
     def _get_legal_actions(self, return_type="list"):
         legal_moves = self.game.getValidMoves(self.board, self.player, return_type=return_type)
