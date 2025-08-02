@@ -5,20 +5,18 @@ from ChessGame.ChessEnv import register_chess_env
 from ChessPPO import WinRateCallback
 from cudaCheck import is_cuda_available
 import gymnasium as gym
-from sb3_contrib import RecurrentPPO
+# from sb3_contrib import RecurrentPPO
+# from recurrent_maskable import RecurrentMaskablePPO
+from common.ppo_mask_recurrent import RecurrentMaskablePPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import SubprocVecEnv
 
-from stable_baselines3.common.callbacks import BaseCallback
-
-from gymnasium import ObservationWrapper
-from gymnasium.spaces import Box
 from torchinfo import summary
 
 # ✅ Hyperparameters
-MODEL_PATH = "ppo_recurrent_chess.zip"
+MODEL_PATH = "ppo_recurrent_maskable_chess.zip"
 LOG_DIR = "./chess_logs"
 TOTAL_TIMESTEPS = 1_000_000  # ✅ Increased for meaningful training
 N_ENVS = 10  # ✅ Parallel envs for speed
@@ -26,42 +24,17 @@ N_STEPS = 2048  # ✅ More stable with PPO
 BATCH_SIZE = 512  # ✅ Must divide n_steps * n_envs (2048 * 8 = 16384)
 N_EPOCHS = 10  # ✅ PPO update passes
 
-
-class ChessObservationFlattenWrapper(ObservationWrapper):
-    def __init__(self, env):
-        super().__init__(env)
-
-        # Confirm expected Dict structure
-        assert isinstance(env.observation_space, gym.spaces.Dict), \
-            "Expected Dict observation space."
-
-        board_shape = env.observation_space.spaces["board"].shape  # (5, 5)
-        actions_shape = env.observation_space.spaces["actions"].shape  # (942,)
-
-        self.board_size = np.prod(board_shape)
-        self.action_size = np.prod(actions_shape)
-
-        self.observation_space = Box(
-            low=-60000,
-            high=60000,
-            shape=(self.board_size + self.action_size,),
-            dtype=np.float32
-        )
-
-    def observation(self, observation):
-        # board = observation["board"].flatten()
-        board =  observation["board"].flatten().astype(np.float32) / 60000.0 # normalized
-        actions = observation["actions"].flatten()
-        return np.concatenate([board, actions])
-
 # # ✅ Check CUDA availability
 cuda_available = is_cuda_available()
 register_chess_env()
 
 # # ✅ Create environment
+# def make_env():
+#     env = gym.make("gymnasium_env/ChessGame-v0")
+#     env = ChessObservationFlattenWrapper(env)
+#     return Monitor(env)
 def make_env():
-    env = gym.make("gymnasium_env/ChessGame-v0")
-    env = ChessObservationFlattenWrapper(env)
+    env = gym.make("gymnasium_env/ChessGame-v0", invalid_action_masking=True)
     return Monitor(env)
 
 if __name__ == "__main__":  # ✅ Required for Windows
@@ -72,9 +45,9 @@ if __name__ == "__main__":  # ✅ Required for Windows
     print("Action space:", env.action_space)
 
     if not os.path.exists(MODEL_PATH):
-        print("Training RecurrentPPO agent with GPU and parallel environments...")
-        model = RecurrentPPO(
-        policy="MlpLstmPolicy",
+        print("Training RecurrentMaskablePPO agent with GPU and parallel environments...")
+        model = RecurrentMaskablePPO(
+        policy="MlpLstmPolicy", #MultiInputLstmPolicy ?
         env=env,
         verbose=1,
         learning_rate=1e-4,        # Could later tune to 1e-5 if overfitting
@@ -93,14 +66,14 @@ if __name__ == "__main__":  # ✅ Required for Windows
         summary(model.policy)
         
         callback = WinRateCallback(log_interval=5000)
-        model.learn(total_timesteps=TOTAL_TIMESTEPS, tb_log_name="RecurrentPPO_Chess",callback=callback)
+        model.learn(total_timesteps=TOTAL_TIMESTEPS, tb_log_name="RecurrentMaskablePPO_Chess",callback=callback)
         model.save(MODEL_PATH)
         print(f"✅ Model saved as {MODEL_PATH}")
         del model
 
         # ✅ Load model and evaluate
-        model = RecurrentPPO.load(MODEL_PATH, env=env)
-        print("Evaluating RecurrentPPO agent...")
+        model = RecurrentMaskablePPO.load(MODEL_PATH, env=env)
+        print("Evaluating RecurrentMaskablePPO agent...")
         mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
         print(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
 

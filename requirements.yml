@@ -21,3 +21,4 @@ dependencies:
       - tensorboard  
       - torchinfo
       - transformers
+      # - git+https://github.com/wdlctc/recurrent_maskable.git

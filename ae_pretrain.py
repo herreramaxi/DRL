@@ -82,8 +82,11 @@ def pretrain_ae():
     boards = (boards + 60000.0) / 120000.0
 
     # 2) dataset & loader
-    dataset = TensorDataset(torch.from_numpy(boards))
-    loader  = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
+    loader = DataLoader(torch.from_numpy(boards), batch_size=BATCH_SIZE, shuffle=True)
+    # for batch in loader:  # now batch is (B,5,5) directly
+
+    # dataset = TensorDataset(torch.from_numpy(boards))
+    # loader  = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
     # 3) model & optimizer
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -94,7 +97,7 @@ def pretrain_ae():
     # 4) training loop
     for epoch in range(1, AE_EPOCHS + 1):
         total_loss = 0.0
-        for (batch,) in loader:
+        for batch in loader:
             batch = batch.to(device)         # (B,5,5)
             _, recon = ae(batch)             # recon: (B,5,5)
             loss = loss_fn(recon, batch)
