@@ -68,7 +68,8 @@ class BoardAutoencoder(nn.Module):
 
     def forward(self, x):
         z = self.encoder(x)
-        return z, self.decoder(z)
+        recon = self.decoder(z)
+        return z, recon
 
 def pretrain_ae():
     # 1) load & normalize boards

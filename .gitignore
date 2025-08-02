@@ -1,4 +1,3 @@
 *.zip
 *_logs
 __pycache__/
-GridWorld/__pycache__/

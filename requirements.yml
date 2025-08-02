@@ -18,6 +18,9 @@ dependencies:
       - matplotlib
       - stable-baselines3[extra]
       - sb3_contrib
+      # - git+https://github.com/Stable-Baselines-Team/stable-baselines3-contrib.git@refs/pull/287/head#egg=sb3_contrib
+      # - git+https://github.com/akbaig/stable-baselines3-contrib.git
+      - -e ./stable-baselines3-contrib
       - tensorboard  
       - torchinfo
       - transformers

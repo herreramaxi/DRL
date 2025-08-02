@@ -6,9 +6,9 @@ from ChessPPO import WinRateCallback
 from cudaCheck import is_cuda_available
 import gymnasium as gym
 # from sb3_contrib import RecurrentPPO
-# from recurrent_maskable import RecurrentMaskablePPO
-from common.ppo_mask_recurrent import RecurrentMaskablePPO
-from stable_baselines3.common.evaluation import evaluate_policy
+from sb3_contrib import MaskableRecurrentPPO
+# from common.ppo_mask_recurrent import RecurrentMaskablePPO
+from sb3_contrib.common.maskable.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import SubprocVecEnv
@@ -18,7 +18,7 @@ from torchinfo import summary
 # ✅ Hyperparameters
 MODEL_PATH = "ppo_recurrent_maskable_chess.zip"
 LOG_DIR = "./chess_logs"
-TOTAL_TIMESTEPS = 1_000_000  # ✅ Increased for meaningful training
+TOTAL_TIMESTEPS = 500  # ✅ Increased for meaningful training
 N_ENVS = 10  # ✅ Parallel envs for speed
 N_STEPS = 2048  # ✅ More stable with PPO
 BATCH_SIZE = 512  # ✅ Must divide n_steps * n_envs (2048 * 8 = 16384)
@@ -46,8 +46,8 @@ if __name__ == "__main__":  # ✅ Required for Windows
 
     if not os.path.exists(MODEL_PATH):
         print("Training RecurrentMaskablePPO agent with GPU and parallel environments...")
-        model = RecurrentMaskablePPO(
-        policy="MlpLstmPolicy", #MultiInputLstmPolicy ?
+        model = MaskableRecurrentPPO(
+        policy="MultiInputLstmPolicy",
         env=env,
         verbose=1,
         learning_rate=1e-4,        # Could later tune to 1e-5 if overfitting
@@ -72,7 +72,7 @@ if __name__ == "__main__":  # ✅ Required for Windows
         del model
 
         # ✅ Load model and evaluate
-        model = RecurrentMaskablePPO.load(MODEL_PATH, env=env)
+        model = MaskableRecurrentPPO.load(MODEL_PATH, env=env)
         print("Evaluating RecurrentMaskablePPO agent...")
         mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
         print(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
