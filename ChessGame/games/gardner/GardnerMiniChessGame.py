@@ -137,7 +137,7 @@ class GardnerMiniChessGame(Game):
         key = str(p) + ":" + str(x) + ":" + str(y)
         return self.action_to_id[key]
 
-    def getGameEnded(self, board, player):
+    def getGameEnded(self, board, player, draw_value=1e-4):
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
         # player = 1
         b = Board(self.n,board)
@@ -148,8 +148,8 @@ class GardnerMiniChessGame(Game):
         if b.has_legal_moves(player):
             return 0
         # draw has a very little value
-        # return 1e-4
-        return 0.5
+        return draw_value
+        # return 0.5
 
     def getCanonicalForm(self, board, player):
         # return state if player==1, else return -state if player==-1

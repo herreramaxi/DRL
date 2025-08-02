@@ -15,16 +15,17 @@ from ChessGame.games.gardner.GardnerMiniChessGame import GardnerMiniChessGame
 
 # Reward Constants (scaled to match max material ~125)
 INVALID_MOVE_REWARD = -0.1      # Strong penalty for invalid moves
-VALID_MOVE_REWARD = 0.1           # Small positive reward for valid move
-CHECK_REWARD = 50              # Check reward (≈ 40% of max material)
+VALID_MOVE_REWARD = -0.001      # Small positive reward for valid move
+# CHECK_REWARD = 50              # Check reward (≈ 40% of max material)
 CHECKMATE_REWARD = 100          # Big reward for checkmate (≈ 4x max material)
 DRAW_REWARD = 5               # Reward for draw (≈ material advantage)
 MATERIAL_SCALE = 1 / 1000       # Keep material shaping (max ~125)
 MAX_STEPS = 100
 
 class MinichessEnv(gym.Env):
-    def __init__(self, size: int = 5, invalid_action_masking = False) -> None:
-        print(f"Initializing MiniChessEnv: {size}x{size} board with invalid action masking ={invalid_action_masking}")
+    def __init__(self, size: int = 5, invalid_action_masking = False, original_step = False) -> None:
+        print(f"Initializing MiniChessEnv: {size}x{size} board with invalid action masking ={invalid_action_masking}, original_step={original_step}")
+        self.original_step = original_step
         self.invalid_action_masking = invalid_action_masking
         self.game = GardnerMiniChessGame()
         self.board = self.game.getInitBoard()
@@ -56,7 +57,53 @@ class MinichessEnv(gym.Env):
         self.steps = 0
         return self._obs(), {}
 
+    def step_original(self, action):
+        if not action in self.legal_moves:
+            print("action", action,"not in", self.legal_moves)
+            # print([self.game.id_to_action[move] for move in self.legal_moves])
+            print(self.game.display(self.board,self.player))
+            print(self.player)
+            print(self.game.id_to_action[action], "BAD ACTION")
+            assert False
+            return self._obs(), -0.01, False, {}
+        elif self.steps == 100:
+            return self._obs(), -0.1, False, True, {}
+
+        self.board, self.player = self.game.getNextState(self.board, self.player, action)
+        reward = self.game.getGameEnded(self.board, 1)
+        done = reward != 0
+        
+        # if done:
+        #     print(self.steps)
+
+        if not done:
+            # Play random move for other agent
+            legal_moves = list(self._get_legal_actions())
+            move = random.choice(legal_moves)
+            self.board, self.player = self.game.getNextState(self.board, self.player, move)
+            reward = self.game.getGameEnded(self.board, 1)
+            done = reward != 0
+
+        self.legal_moves = self._get_legal_actions()
+        self.legal_moves_one_hot = self._get_legal_actions(return_type="one_hot")
+        obs = self._obs()
+
+        reward = np.sum(obs["board"]) / 1000
+
+        
+        if done:
+            # print(self.game.display(self.board, self.player))
+            # print("\nGAME OVER {}\n".format(reward)) 
+            pass
+
+        self.steps += 1
+
+        return obs, reward, done, False, {}
+    
     def step(self, action):
+        # if self.original_step:
+        #     return self.step_original(action)
+
         self.steps += 1
         info = {}
 
@@ -87,7 +134,7 @@ class MinichessEnv(gym.Env):
         reward = VALID_MOVE_REWARD  # Reward for making a valid move
 
         # Check game status after player's move
-        game_result = self.game.getGameEnded(self.board, 1)
+        game_result = self.game.getGameEnded(self.board, 1, 0.5)
         done = game_result != 0
 
         if done:
@@ -115,7 +162,7 @@ class MinichessEnv(gym.Env):
                 move = random.choice(legal_moves)                
                 self.board, self.player = self.game.getNextState(self.board, self.player, move)
                 info["chess_move"] =  info["chess_move"] + " , " + self.get_action_humanized(move, -1)
-                game_result = self.game.getGameEnded(self.board, 1)
+                game_result = self.game.getGameEnded(self.board, 1,0.5)
                 done = game_result != 0
 
                 if done:

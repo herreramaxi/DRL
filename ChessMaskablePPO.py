@@ -19,8 +19,8 @@ from sb3_contrib.common.maskable.evaluation import evaluate_policy
 MODEL_PATH = "maskablePPO_chess.zip"
 LOG_DIR = "./chess_logs"
 # TOTAL_TIMESTEPS = 1_000_000  # ✅ Increased for meaningful training
-TOTAL_TIMESTEPS = 1_000  # ✅ Increased for meaningful training
-N_ENVS = 1  # ✅ Parallel envs for speed
+TOTAL_TIMESTEPS = 100_000  # ✅ Increased for meaningful training
+N_ENVS = 10  # ✅ Parallel envs for speed
 N_STEPS = 2048  # ✅ More stable with PPO
 BATCH_SIZE = 512  # ✅ Must divide n_steps * n_envs (2048 * 8 = 16384)
 N_EPOCHS = 10  # ✅ PPO update passes
@@ -31,7 +31,7 @@ register_chess_env()
 
 # ✅ Create environment
 def make_env_masking_enabled():
-    env =  gym.make("gymnasium_env/ChessGame-v0",invalid_action_masking=True)
+    env =  gym.make("gymnasium_env/ChessGame-v0",invalid_action_masking=True, original_step=False) 
     return Monitor(env)
 
 if __name__ == "__main__":  # ✅ Required for Windows
@@ -65,7 +65,7 @@ if __name__ == "__main__":  # ✅ Required for Windows
         summary(model.policy)
 
         callback = WinRateCallback(log_interval=5000)
-        model.learn(total_timesteps=TOTAL_TIMESTEPS, tb_log_name="MaskablePPO_Chess",callback=callback)
+        model.learn(total_timesteps=TOTAL_TIMESTEPS, tb_log_name="MaskablePPO_Chess_r2",callback=callback)
         model.save(MODEL_PATH)
         print(f"✅ Model saved as {MODEL_PATH}")
         del model
@@ -76,25 +76,25 @@ if __name__ == "__main__":  # ✅ Required for Windows
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
     print(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
 
-    # ---------- manual play loop ----------
-    env = gym.make("gymnasium_env/ChessGame-v0", invalid_action_masking=True)
-    obs, _ = env.reset() 
-    env.render() 
+    # # ---------- manual play loop ----------
+    # env = gym.make("gymnasium_env/ChessGame-v0", invalid_action_masking=True)
+    # obs, _ = env.reset() 
+    # env.render() 
     
-    while True:      
-        action_masks = get_action_masks(env) 
-        action_arr, _  = model.predict(obs, action_masks=action_masks, deterministic=False)
+    # while True:      
+    #     action_masks = get_action_masks(env) 
+    #     action_arr, _  = model.predict(obs, action_masks=action_masks, deterministic=False)
         
-        # unpack the single element
-        action = int(action_arr)   # or action_arr[0]
-        if action_masks[action] == 0:
-        # definitely invalid
-            print("⚠️  Agent picked a masked-out action:", env.unwrapped.game.id_to_action[action])
+    #     # unpack the single element
+    #     action = int(action_arr)   # or action_arr[0]
+    #     if action_masks[action] == 0:
+    #     # definitely invalid
+    #         print("⚠️  Agent picked a masked-out action:", env.unwrapped.game.id_to_action[action])
             
-        obs, reward, terminated, truncated, info = env.step(action) # return obs, reward, done, truncated, info    
-        print("move:",  info["chess_move"]) 
-        env.render() 
-        # print(obs, reward, terminated, truncated )
-        if terminated or truncated:
-            break
+    #     obs, reward, terminated, truncated, info = env.step(action) # return obs, reward, done, truncated, info    
+    #     print("move:",  info["chess_move"]) 
+    #     env.render() 
+    #     # print(obs, reward, terminated, truncated )
+    #     if terminated or truncated:
+    #         break
 # tensorboard --logdir=./chess_logs 
