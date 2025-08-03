@@ -1,81 +1,59 @@
 import os
-
+import argparse
 import numpy as np
 from ChessGame.ChessEnv import register_chess_env
 from ChessPPO import WinRateCallback
-from cudaCheck import is_cuda_available
+from common import get_device_name, get_model_path, make_env_masking_enabled, parse_arguments
 import gymnasium as gym
-# from sb3_contrib import RecurrentPPO
-from sb3_contrib import MaskableRecurrentPPO
-# from common.ppo_mask_recurrent import RecurrentMaskablePPO
+from stable_baselines3.common.vec_env import DummyVecEnv
 from sb3_contrib.common.maskable.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import SubprocVecEnv
-
+from sb3_contrib.ppo_mask_recurrent.ppo_mask_recurrent import MaskableRecurrentPPO
 from torchinfo import summary
 
-# ✅ Hyperparameters
-MODEL_PATH = "ppo_recurrent_maskable_chess.zip"
-LOG_DIR = "./chess_logs"
-TOTAL_TIMESTEPS = 500  # ✅ Increased for meaningful training
-N_ENVS = 10  # ✅ Parallel envs for speed
-N_STEPS = 2048  # ✅ More stable with PPO
-BATCH_SIZE = 512  # ✅ Must divide n_steps * n_envs (2048 * 8 = 16384)
-N_EPOCHS = 10  # ✅ PPO update passes
+if __name__ == "__main__":  
+    args = parse_arguments("MaskableRecurrentPPO")   
+    device = get_device_name()
+    register_chess_env()  
+    
+    if not os.path.exists(args.model_path):
+        print(f"Training '{args.agent_name}' agent using device '{device}' and '{args.n_envs}' parallel environments...")
+        
+        env = make_vec_env(make_env_masking_enabled, n_envs=args.n_envs, vec_env_cls=SubprocVecEnv)
 
-# # ✅ Check CUDA availability
-cuda_available = is_cuda_available()
-register_chess_env()
-
-# # ✅ Create environment
-# def make_env():
-#     env = gym.make("gymnasium_env/ChessGame-v0")
-#     env = ChessObservationFlattenWrapper(env)
-#     return Monitor(env)
-def make_env():
-    env = gym.make("gymnasium_env/ChessGame-v0", invalid_action_masking=True)
-    return Monitor(env)
-
-if __name__ == "__main__":  # ✅ Required for Windows
-    # ✅ Create SubprocVecEnv for parallel environments
-    env = make_vec_env(make_env, n_envs=N_ENVS, vec_env_cls=SubprocVecEnv)
-
-    print("Observation space:", env.observation_space)
-    print("Action space:", env.action_space)
-
-    if not os.path.exists(MODEL_PATH):
-        print("Training RecurrentMaskablePPO agent with GPU and parallel environments...")
         model = MaskableRecurrentPPO(
-        policy="MultiInputLstmPolicy",
-        env=env,
-        verbose=1,
-        learning_rate=1e-4,        # Could later tune to 1e-5 if overfitting
-        n_steps=N_STEPS,              # Rollout steps per environment
-        batch_size=BATCH_SIZE,            # Ensure divisibility (n_steps * n_envs) % batch_size == 0
-        n_epochs=N_EPOCHS,               # PPO update passes
-        gamma=0.3,                 # Low discount factor as per research
-        gae_lambda=1.0,            # Full advantage estimation
-        clip_range=0.2,
-        ent_coef=0.01,             # Encourages exploration
-        vf_coef=0.5,               # Value loss coefficient (default)
-        max_grad_norm=0.5,
-        device="cuda" if cuda_available else "cpu",
-        tensorboard_log=LOG_DIR)
+            policy="MultiInputLstmPolicy",
+            env=env,
+            verbose=1,
+            learning_rate=1e-4,        # Could later tune to 1e-5 if overfitting
+            n_steps=args.n_steps,              # Rollout steps per environment
+            batch_size=args.batch_size,            # Ensure divisibility (n_steps * n_envs) % batch_size == 0
+            n_epochs=args.n_epochs,               # PPO update passes
+            gamma=0.3,                 # Low discount factor as per research
+            gae_lambda=1.0,            # Full advantage estimation
+            clip_range=0.2,
+            ent_coef=0.01,             # Encourages exploration
+            vf_coef=0.5,               # Value loss coefficient (default)
+            max_grad_norm=0.5,
+            device=device,
+            tensorboard_log=args.log_dir)
 
+        print("Model summary:")    
         summary(model.policy)
         
         callback = WinRateCallback(log_interval=5000)
-        model.learn(total_timesteps=TOTAL_TIMESTEPS, tb_log_name="RecurrentMaskablePPO_Chess",callback=callback)
-        model.save(MODEL_PATH)
-        print(f"✅ Model saved as {MODEL_PATH}")
+        model.learn(total_timesteps=args.total_timesteps, tb_log_name=args.agent_name,callback=callback)
+        model.save(args.model_path)
+        print(f"Model saved on {args.model_path}")
         del model
 
-        # ✅ Load model and evaluate
-        model = MaskableRecurrentPPO.load(MODEL_PATH, env=env)
-        print("Evaluating RecurrentMaskablePPO agent...")
-        mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
-        print(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
+    env = make_vec_env(make_env_masking_enabled, n_envs=1, vec_env_cls=DummyVecEnv)
+    model = MaskableRecurrentPPO.load(args.model_path, env=env)
+    print(f"Evaluating {args.agent_name} agent...")
+    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
+    print(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
 
 
 # # tensorboard --logdir=./chess_logs 

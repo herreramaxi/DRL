@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from ChessGame.ChessEnv import register_chess_env
 from ChessPPO import WinRateCallback
-from cudaCheck import is_cuda_available
+from common import is_cuda_available, make_env
 import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -26,11 +26,6 @@ N_EPOCHS = 10
 # ✅ CUDA check
 cuda_available = is_cuda_available()
 register_chess_env()
-
-# ✅ Create environment
-def make_env():
-    env = gym.make("gymnasium_env/ChessGame-v0")
-    return Monitor(env)
 
 class TinyGPT2Encoder(nn.Module):
     def __init__(self, vocab_size=100, seq_len=25, n_layer=2, n_head=2, n_embd=64):

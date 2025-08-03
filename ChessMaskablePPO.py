@@ -1,9 +1,9 @@
 import os
+import argparse
 from ChessGame.ChessEnv import register_chess_env
 from ChessPPO import WinRateCallback
-from cudaCheck import is_cuda_available
-import gymnasium as gym
-from stable_baselines3.common.monitor import Monitor
+from common import get_device_name, get_model_path, make_env_masking_enabled, parse_arguments
+
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.vec_env import DummyVecEnv
@@ -15,64 +15,47 @@ from sb3_contrib.common.maskable.utils import get_action_masks
 from sb3_contrib.common.maskable.callbacks import MaskableEvalCallback
 from sb3_contrib.common.maskable.evaluation import evaluate_policy
 
-# ✅ Hyperparameters
-MODEL_PATH = "maskablePPO_chess.zip"
-LOG_DIR = "./chess_logs"
-# TOTAL_TIMESTEPS = 1_000_000  # ✅ Increased for meaningful training
-TOTAL_TIMESTEPS = 100_000  # ✅ Increased for meaningful training
-N_ENVS = 10  # ✅ Parallel envs for speed
-N_STEPS = 2048  # ✅ More stable with PPO
-BATCH_SIZE = 512  # ✅ Must divide n_steps * n_envs (2048 * 8 = 16384)
-N_EPOCHS = 10  # ✅ PPO update passes
+register_chess_env()  
 
+if __name__ == "__main__":    
+    args = parse_arguments("MaskablePPO")   
+    device = get_device_name()
+    
+    if not os.path.exists(args.model_path):
+        print(f"Training '{args.agent_name}' agent using device '{device}' and '{args.n_envs}' parallel environments...")
+        
+        env = make_vec_env(make_env_masking_enabled, n_envs=args.n_envs, vec_env_cls=SubprocVecEnv)
 
-cuda_available = is_cuda_available()
-register_chess_env()
-
-# ✅ Create environment
-def make_env_masking_enabled():
-    env =  gym.make("gymnasium_env/ChessGame-v0",invalid_action_masking=True, original_step=False) 
-    return Monitor(env)
-
-if __name__ == "__main__":  # ✅ Required for Windows
-    # ✅ Create SubprocVecEnv for parallel environments
-    env = make_vec_env(make_env_masking_enabled, n_envs=N_ENVS, vec_env_cls=SubprocVecEnv)
-
-    print("Observation space:", env.observation_space)
-    print("Action space:", env.action_space)
-
-    if not os.path.exists(MODEL_PATH):
-        print("Training PPO agent with GPU and parallel environments...")
         model = MaskablePPO(                     
-        policy="MultiInputPolicy",              
-        # policy="MlpPolicy", 
-        env=env,                              
-        learning_rate=1e-4,
-        n_steps=N_STEPS,
-        batch_size=BATCH_SIZE,
-        n_epochs=N_EPOCHS,
-        gamma=0.3,
-        gae_lambda=1.0,
-        clip_range=0.2,
-        ent_coef=0.01,
-        vf_coef=0.5,
-        max_grad_norm=0.5,
-        device="cuda" if cuda_available else "cpu",
-        tensorboard_log=LOG_DIR,
-        verbose=1,
-        )
-                
+            policy="MultiInputPolicy",              
+            # policy="MlpPolicy", 
+            env=env,                              
+            learning_rate=1e-4,
+            n_steps=args.n_steps,
+            batch_size=args.batch_size,
+            n_epochs=args.n_epochs,
+            gamma=0.3,
+            gae_lambda=1.0,
+            clip_range=0.2,
+            ent_coef=0.01,
+            vf_coef=0.5,
+            max_grad_norm=0.5,
+            device=device,
+            tensorboard_log=args.log_dir,
+            verbose=1)
+
+        print("Model summary:")    
         summary(model.policy)
 
         callback = WinRateCallback(log_interval=5000)
-        model.learn(total_timesteps=TOTAL_TIMESTEPS, tb_log_name="MaskablePPO_Chess_r2",callback=callback)
-        model.save(MODEL_PATH)
-        print(f"✅ Model saved as {MODEL_PATH}")
+        model.learn(total_timesteps=args.total_timesteps, tb_log_name=args.agent_name,callback=callback)
+        model.save(args.model_path)
+        print(f"Model saved on {args.model_path}")
         del model
 
-    # ✅ Load model and evaluate
-    model = MaskablePPO.load(MODEL_PATH, env=env)
-    print("Evaluating MaskablePPO agent...")
+    env = make_vec_env(make_env_masking_enabled, n_envs=1, vec_env_cls=DummyVecEnv)
+    model = MaskablePPO.load(args.model_path, env=env)
+    print(f"Evaluating {args.agent_name} agent...")
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
     print(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
 

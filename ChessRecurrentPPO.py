@@ -3,7 +3,7 @@ import os
 import numpy as np
 from ChessGame.ChessEnv import register_chess_env
 from ChessPPO import WinRateCallback
-from cudaCheck import is_cuda_available
+from common import is_cuda_available
 import gymnasium as gym
 from sb3_contrib import RecurrentPPO
 from stable_baselines3.common.evaluation import evaluate_policy
