@@ -2,6 +2,6 @@
 *_logs
 __pycache__/
 chess_logs/
-chess_logs_old/
+chess_logs*/
 *.pth
 *.npy

@@ -65,19 +65,27 @@ def run_experiments(num_repeats, parallel):
 
     if(parallel):
         for repeat in range(args.num_repeats):
-            important(f"Iteration: {repeat+1}")
+            important(f"Iteration: {repeat + 1}")
+            start_iteration = time.time()
             
             with ThreadPoolExecutor(max_workers=args.max_workers) as executor:
                 futures = [executor.submit(run_exp, exp, unknown) for exp in EXPERIMENTS]
                 # wait and re-raise if any fails
                 for fut in as_completed(futures):
                     fut.result()  # will raise CalledProcessError if the subprocess failed
+            
+            total_time_iteration = time.time() - start_iteration
+            important(f"Iteration {repeat+1} has completed in {total_time_iteration/60:.2f} minutes ({total_time_iteration:.1f}s)")
     else:
         for repeat in range(num_repeats):
-            important(f"Iteration: {repeat+1}")
+            important(f"Iteration: {repeat + 1}")
+            start_iteration = time.time()
 
             for exp in EXPERIMENTS:
                 run_exp(exp, unknown)
+
+            total_time_iteration = time.time() - start_iteration
+            important(f"Iteration {repeat+1} has completed in {total_time_iteration/60:.2f} minutes ({total_time_iteration:.1f}s)")
 
     total_time = time.time() - start
     success(f"Experiments have completed in {total_time/60:.2f} minutes ({total_time:.1f}s)")
