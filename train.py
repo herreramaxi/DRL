@@ -1,4 +1,5 @@
 import argparse
+import os
 import subprocess
 import time     
 from common import build_cmd
@@ -97,6 +98,11 @@ def run_exp(exp, unknown):
 if __name__ == "__main__":    
     important("Starting experiments...")
 
+    os.makedirs("boards", exist_ok=True)
+    os.makedirs("weights", exist_ok=True)
+    os.makedirs("models", exist_ok=True)
+    os.makedirs("chess_logs", exist_ok=True)
+    
     overall_start = time.time()
     parser = argparse.ArgumentParser()    
     parser.add_argument("--parallel",    type=str, default="False",help="Run experiments in parallel")
