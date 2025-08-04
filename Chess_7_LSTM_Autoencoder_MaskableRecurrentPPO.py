@@ -7,8 +7,8 @@ from Chess_2_MaskablePPO import make_env_masking_enabled
 from Chess_1_PPO import WinRateCallback
 from Chess_6_LSTM_Autoencoder_MaskablePPO import LSTMAutoencoderFeatureExtractor
 from ae_rnn_pretrain import SimpleLSTMAutoencoder
-from common import build_cmd, get_device_name, is_cuda_available, parse_arguments, print_model_summary
-from custom_logging import important, success
+from common import build_cmd, evaluate_model_masking_enabled, get_device_name, is_cuda_available, model_learn, parse_arguments, print_model_summary
+from custom_logging import important, important2, success
 import gymnasium as gym
 from sb3_contrib.ppo_mask_recurrent.ppo_mask_recurrent import MaskableRecurrentPPO
 from sb3_contrib.common.maskable.evaluation import evaluate_policy
@@ -51,9 +51,11 @@ if __name__ == "__main__":
 
         policy_kwargs = dict(
             features_extractor_class=LSTMAutoencoderFeatureExtractor,
-            features_extractor_kwargs={"encoder_model": ae}
+            features_extractor_kwargs={"encoder_model": ae},
+            share_features_extractor=args.share_features_extractor
         )
 
+        important2(f"share_features_extractor: {args.share_features_extractor}")
         model = MaskableRecurrentPPO(
             policy="MultiInputLstmPolicy",
             env=env,
@@ -74,18 +76,9 @@ if __name__ == "__main__":
         )
 
         print_model_summary(model)
+        model_learn(args, model)
 
-        callback = WinRateCallback(log_interval=5000)
-        model.learn(total_timesteps=args.total_timesteps, tb_log_name=args.agent_name,callback=callback)
-        model.save(args.model_path)
-        success(f"Model saved on {args.model_path}")
-        del model
-
-    env = make_vec_env(make_env_masking_enabled, n_envs=1, vec_env_cls=DummyVecEnv)
-    model = MaskableRecurrentPPO.load(args.model_path, env=env)
-    print(f"Evaluating {args.agent_name} agent...")
-    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
-    important(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
-
+    evaluate_model_masking_enabled(MaskableRecurrentPPO, args, evaluate_policy) 
+  
 # ➤ Run TensorBoard with:
 # tensorboard --logdir=./chess_logs

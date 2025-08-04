@@ -2,9 +2,9 @@ import os
 import argparse
 from ChessGame.ChessEnv import register_chess_env
 from Chess_1_PPO import WinRateCallback
-from common import get_device_name, get_model_path, make_env_masking_enabled, parse_arguments, print_model_summary
+from common import evaluate_model, evaluate_model_masking_enabled, get_device_name, get_model_path, make_env_masking_enabled, model_learn, parse_arguments, print_model_summary
 
-from custom_logging import important, success
+from custom_logging import important, important2, success
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.vec_env import DummyVecEnv
@@ -27,9 +27,12 @@ if __name__ == "__main__":
         
         env = make_vec_env(make_env_masking_enabled, n_envs=args.n_envs, vec_env_cls=SubprocVecEnv)
 
+        important2(f"share_features_extractor: {args.share_features_extractor}")
+
         model = MaskablePPO(                     
             policy="MultiInputPolicy",              
             # policy="MlpPolicy", 
+            policy_kwargs=dict(share_features_extractor=args.share_features_extractor),
             env=env,                              
             learning_rate=1e-4,
             n_steps=args.n_steps,
@@ -46,18 +49,9 @@ if __name__ == "__main__":
             verbose=1)
 
         print_model_summary(model)
+        model_learn(args, model)
 
-        callback = WinRateCallback(log_interval=5000)
-        model.learn(total_timesteps=args.total_timesteps, tb_log_name=args.agent_name,callback=callback)
-        model.save(args.model_path)
-        success(f"Model saved on {args.model_path}")
-        del model
-
-    env = make_vec_env(make_env_masking_enabled, n_envs=1, vec_env_cls=DummyVecEnv)
-    model = MaskablePPO.load(args.model_path, env=env)
-    print(f"Evaluating {args.agent_name} agent...")
-    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
-    important(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
+    evaluate_model_masking_enabled(MaskablePPO, args, evaluate_policy)     
 
     # # ---------- manual play loop ----------
     # env = gym.make("gymnasium_env/ChessGame-v0", invalid_action_masking=True)

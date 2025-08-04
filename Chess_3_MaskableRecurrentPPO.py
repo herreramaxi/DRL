@@ -3,8 +3,8 @@ import argparse
 import numpy as np
 from ChessGame.ChessEnv import register_chess_env
 from Chess_1_PPO import WinRateCallback
-from common import get_device_name, get_model_path, make_env_masking_enabled, parse_arguments, print_model_summary
-from custom_logging import important, success
+from common import evaluate_model_masking_enabled, get_device_name, get_model_path, make_env_masking_enabled, model_learn, parse_arguments, print_model_summary
+from custom_logging import important, important2, success
 import gymnasium as gym
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.monitor import Monitor
@@ -24,9 +24,11 @@ if __name__ == "__main__":
         print(f"Training '{args.agent_name}' agent using device '{device}' and '{args.n_envs}' parallel environments...")
         
         env = make_vec_env(make_env_masking_enabled, n_envs=args.n_envs, vec_env_cls=SubprocVecEnv)
-
+        important2(f"share_features_extractor: {args.share_features_extractor}")
+        
         model = MaskableRecurrentPPO(
             policy="MultiInputLstmPolicy",
+            policy_kwargs=dict(share_features_extractor=args.share_features_extractor),
             env=env,
             verbose=1,
             learning_rate=1e-4,        # Could later tune to 1e-5 if overfitting
@@ -43,18 +45,9 @@ if __name__ == "__main__":
             tensorboard_log=args.log_dir)
 
         print_model_summary(model)
-        
-        callback = WinRateCallback(log_interval=5000)
-        model.learn(total_timesteps=args.total_timesteps, tb_log_name=args.agent_name,callback=callback)
-        model.save(args.model_path)
-        success(f"Model saved on {args.model_path}")
-        del model
+        model_learn(args, model)
 
-    env = make_vec_env(make_env_masking_enabled, n_envs=1, vec_env_cls=DummyVecEnv)
-    model = MaskableRecurrentPPO.load(args.model_path, env=env)
-    print(f"Evaluating {args.agent_name} agent...")
-    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
-    important(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
+    evaluate_model_masking_enabled(MaskableRecurrentPPO, args, evaluate_policy)        
 
 
 # # tensorboard --logdir=./chess_logs 

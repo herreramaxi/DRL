@@ -3,8 +3,8 @@ import torch
 import torch.nn as nn
 from ChessGame.ChessEnv import register_chess_env
 from Chess_1_PPO import WinRateCallback
-from common import get_device_name, is_cuda_available, make_env, make_env_masking_enabled, parse_arguments, print_model_summary
-from custom_logging import important, success
+from common import evaluate_model_masking_enabled, get_device_name, is_cuda_available, make_env, make_env_masking_enabled, model_learn, parse_arguments, print_model_summary
+from custom_logging import important, important2, success
 import gymnasium as gym
 # from stable_baselines3 import PPO
 from sb3_contrib import MaskablePPO    
@@ -70,9 +70,11 @@ if __name__ == "__main__":
         tiny_transformer = TinyGPT2Encoder(vocab_size=100, seq_len=25, n_layer=2, n_head=2, n_embd=64)
         policy_kwargs = dict(
             features_extractor_class=TransformerFeatureExtractor,
-            features_extractor_kwargs={"transformer_model": tiny_transformer}
+            features_extractor_kwargs={"transformer_model": tiny_transformer},
+            share_features_extractor=args.share_features_extractor
         )
 
+        important2(f"share_features_extractor: {args.share_features_extractor}")
         model = MaskablePPO(
             policy="MultiInputPolicy",
             env=env,
@@ -93,17 +95,9 @@ if __name__ == "__main__":
         )
 
         print_model_summary(model)
+        model_learn(args, model)
 
-        callback = WinRateCallback(log_interval=5000)
-        model.learn(total_timesteps=args.total_timesteps, tb_log_name=args.agent_name,callback=callback)
-        model.save(args.model_path)
-        success(f"Model saved on {args.model_path}")
-        del model
-
-    env = make_vec_env(make_env_masking_enabled, n_envs=1, vec_env_cls=DummyVecEnv)
-    model = MaskablePPO.load(args.model_path, env=env)
-    print(f"Evaluating {args.agent_name} agent...")
-    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
-    important(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
+    evaluate_model_masking_enabled(MaskablePPO, args, evaluate_policy) 
+  
 # ➤ Run TensorBoard with:
 # tensorboard --logdir=./chess_logs
