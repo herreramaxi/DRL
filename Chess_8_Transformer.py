@@ -2,29 +2,20 @@ import os
 import torch
 import torch.nn as nn
 from ChessGame.ChessEnv import register_chess_env
-from ChessPPO import WinRateCallback
-from common import is_cuda_available, make_env
+from Chess_1_PPO import WinRateCallback
+from common import get_device_name, is_cuda_available, make_env, make_env_masking_enabled, parse_arguments, print_model_summary
+from custom_logging import important, success
 import gymnasium as gym
-from stable_baselines3 import PPO
-from stable_baselines3.common.evaluation import evaluate_policy
-from stable_baselines3.common.monitor import Monitor
+# from stable_baselines3 import PPO
+from sb3_contrib import MaskablePPO    
+# from stable_baselines3.common.evaluation import evaluate_policy
+from sb3_contrib.common.maskable.evaluation import evaluate_policy
 from stable_baselines3.common.env_util import make_vec_env
-from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 from torchinfo import summary
 from transformers import GPT2Config, GPT2Model
 
-# ✅ Hyperparameters
-MODEL_PATH = "ppo_transformer_chess.zip"
-LOG_DIR = "./chess_logs"
-TOTAL_TIMESTEPS = 1_000_000
-N_ENVS = 10
-N_STEPS = 2048
-BATCH_SIZE = 512
-N_EPOCHS = 10
-
-# ✅ CUDA check
-cuda_available = is_cuda_available()
 register_chess_env()
 
 class TinyGPT2Encoder(nn.Module):
@@ -67,52 +58,52 @@ class TransformerFeatureExtractor(BaseFeaturesExtractor):
 
 
 if __name__ == "__main__":
-    env = make_vec_env(make_env, n_envs=N_ENVS, vec_env_cls=SubprocVecEnv)
+    args = parse_arguments("8_Naive_Transformer_PPO")   
+    device = get_device_name()
+    register_chess_env()  
 
-    print("Observation space:", env.observation_space)
-    print("Action space:", env.action_space)
+    if not os.path.exists(args.model_path):
+        print(f"Training '{args.agent_name}' agent using device '{device}' and '{args.n_envs}' parallel environments...")
+        
+        env = make_vec_env(make_env_masking_enabled, n_envs=args.n_envs, vec_env_cls=SubprocVecEnv)
 
-    if not os.path.exists(MODEL_PATH):       
         tiny_transformer = TinyGPT2Encoder(vocab_size=100, seq_len=25, n_layer=2, n_head=2, n_embd=64)
-
         policy_kwargs = dict(
             features_extractor_class=TransformerFeatureExtractor,
             features_extractor_kwargs={"transformer_model": tiny_transformer}
         )
 
-        print("Training PPO-Tranformer agent with GPU and parallel environments...")
-        model = PPO(
+        model = MaskablePPO(
             policy="MultiInputPolicy",
             env=env,
             verbose=1,
             learning_rate=1e-4,
-            n_steps=N_STEPS,
-            batch_size=BATCH_SIZE,
-            n_epochs=N_EPOCHS,
+            n_steps=args.n_steps,
+            batch_size=args.batch_size,
+            n_epochs=args.n_epochs,
             gamma=0.3,
             gae_lambda=1.0,
             clip_range=0.2,
             ent_coef=0.01,
             vf_coef=0.5,
             max_grad_norm=0.5,
-            device="cuda" if cuda_available else "cpu",
+            device=device,
             policy_kwargs=policy_kwargs,
-            tensorboard_log=LOG_DIR
+            tensorboard_log=args.log_dir
         )
 
-        summary(model.policy)
+        print_model_summary(model)
 
         callback = WinRateCallback(log_interval=5000)
-        model.learn(total_timesteps=TOTAL_TIMESTEPS, tb_log_name="PPO_Transformer_Chess", callback=callback)
-        model.save(MODEL_PATH)
-        print(f"✅ Model saved as {MODEL_PATH}")
+        model.learn(total_timesteps=args.total_timesteps, tb_log_name=args.agent_name,callback=callback)
+        model.save(args.model_path)
+        success(f"Model saved on {args.model_path}")
         del model
 
-        # ✅ Load and evaluate
-        model = PPO.load(MODEL_PATH, env=env)
-        print("Evaluating PPO_Transformer_Chess agent...")
-        mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
-        print(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
-
+    env = make_vec_env(make_env_masking_enabled, n_envs=1, vec_env_cls=DummyVecEnv)
+    model = MaskablePPO.load(args.model_path, env=env)
+    print(f"Evaluating {args.agent_name} agent...")
+    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
+    important(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
 # ➤ Run TensorBoard with:
 # tensorboard --logdir=./chess_logs

@@ -1,7 +1,8 @@
 import os
 from ChessGame.ChessEnv import register_chess_env
-from common import get_device_name, parse_arguments
+from common import get_device_name, parse_arguments, print_model_summary
 from commonCallbacks import WinRateCallback
+from custom_logging import important, success
 import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
@@ -14,7 +15,7 @@ from common import make_env
 register_chess_env()  
 
 if __name__ == "__main__":
-    args = parse_arguments("PPO")   
+    args = parse_arguments("1_PPO")   
     device = get_device_name()    
 
     if not os.path.exists(args.model_path):
@@ -41,20 +42,19 @@ if __name__ == "__main__":
             device=device,
             tensorboard_log=args.log_dir)
         
-        print("Model summary:")    
-        summary(model.policy)
+        print_model_summary(model)
 
         callback = WinRateCallback(log_interval=5000)
         model.learn(total_timesteps=args.total_timesteps, tb_log_name=args.agent_name,callback=callback)
         model.save(args.model_path)
-        print(f"Model saved on {args.model_path}")
+        success(f"Model saved on {args.model_path}")
         del model
 
     env = make_vec_env(make_env, n_envs=1, vec_env_cls=DummyVecEnv)
     model = PPO.load(args.model_path, env=env)
     print(f"Evaluating {args.agent_name} agent...")
     mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=50)
-    print(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
+    important(f"Mean Reward: {mean_reward:.2f} +/- {std_reward:.2f}")
 
 
 # tensorboard --logdir=./chess_logs 

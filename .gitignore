@@ -1,3 +1,7 @@
 *.zip
 *_logs
 __pycache__/
+chess_logs/
+chess_logs_old/
+*.pth
+*.npy

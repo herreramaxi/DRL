@@ -8,29 +8,31 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 from tqdm import tqdm
 
+from common import get_device_name, make_env_masking_enabled, parse_arguments_ae
 import gymnasium as gym
 from ChessGame.ChessEnv import register_chess_env
 
 # ─── Settings ─────────────────────────────────────
-N_SAMPLES   = 50_000
+# N_SAMPLES   = 50_000
 BATCH_SIZE  = 512
 AE_LR       = 1e-3
-AE_EPOCHS   = 20
+# AE_EPOCHS   = 20
 INPUT_DIM   = 5 * 5
 HIDDEN_DIM  = 64
 LATENT_DIM  = 8
-SAVE_BOARDS = "boards.npy"
-SAVE_AE     = "ae_pretrained.pth"
+# SAVE_BOARDS = "boards.npy"
+# SAVE_AE     = "ae_pretrained.pth"
 # ──────────────────────────────────────────────────
 
-def collect_boards():
-    register_chess_env()
-    env = gym.make("gymnasium_env/ChessGame-v0", invalid_action_masking=True)
+register_chess_env()
+
+def collect_boards(args):    
+    env = make_env_masking_enabled(True)
     obs, _ = env.reset()
 
     boards = []
-    pbar = tqdm(total=N_SAMPLES, desc="Collecting boards")
-    while len(boards) < N_SAMPLES:
+    pbar = tqdm(total=args.n_samples, desc="Collecting boards")
+    while len(boards) < args.n_samples:
         # 1) get legal moves set, convert to list
         legal_moves = list(env.unwrapped.get_legal_moves())
         # 2) sample one valid action
@@ -46,8 +48,8 @@ def collect_boards():
     pbar.close()
 
     boards = np.stack(boards).astype(np.float32)  # shape (N_SAMPLES,5,5)
-    np.save(SAVE_BOARDS, boards)
-    print(f"Saved {boards.shape[0]} boards → {SAVE_BOARDS}")
+    np.save(args.board_file_path, boards)
+    print(f"Saved {boards.shape[0]} boards → {args.board_file_path}")
 
 class BoardAutoencoder(nn.Module):
     def __init__(self, input_dim=INPUT_DIM, hidden_dim=HIDDEN_DIM, latent_dim=LATENT_DIM):
@@ -71,14 +73,9 @@ class BoardAutoencoder(nn.Module):
         recon = self.decoder(z)
         return z, recon
 
-def pretrain_ae():
+def pretrain_ae(args):
     # 1) load & normalize boards
-    boards = np.load(SAVE_BOARDS)
-    # if wrong shape, regenerate
-    if boards.ndim != 3 or boards.shape[1:] != (5,5):
-        print(f"boards.npy has shape {boards.shape}, expected (N,5,5). Regenerating...")
-        collect_boards()
-        boards = np.load(SAVE_BOARDS)
+    boards = np.load(args.board_file_path)   
     boards = boards.astype(np.float32)
     boards = (boards + 60000.0) / 120000.0
 
@@ -90,13 +87,13 @@ def pretrain_ae():
     # loader  = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
     # 3) model & optimizer
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = get_device_name()
     ae = BoardAutoencoder().to(device)
     optimizer = optim.Adam(ae.parameters(), lr=AE_LR)
     loss_fn = nn.MSELoss()
 
     # 4) training loop
-    for epoch in range(1, AE_EPOCHS + 1):
+    for epoch in range(1, args.n_epochs + 1):
         total_loss = 0.0
         for batch in loader:
             batch = batch.to(device)         # (B,5,5)
@@ -107,15 +104,27 @@ def pretrain_ae():
             optimizer.step()
             total_loss += loss.item() * batch.size(0)
         avg = total_loss / len(loader.dataset)
-        print(f"Epoch {epoch:2d}/{AE_EPOCHS}  AE loss = {avg:.6f}")
+        print(f"Epoch {epoch:2d}/{args.n_epochs}  AE loss = {avg:.6f}")
 
     # 5) save weights
-    torch.save(ae.state_dict(), SAVE_AE)
-    print(f"Saved pretrained AE → {SAVE_AE}")
+    torch.save(ae.state_dict(), args.weights_file_path)
+    print(f"Saved pretrained AE → {args.weights_file_path}")
 
 if __name__ == "__main__":
-    # Always ensure boards.npy is correct
-    if not os.path.exists(SAVE_BOARDS):
-        collect_boards()
-    # Pretrain AE (will regenerate boards.npy if shape is off)
-    pretrain_ae()
+    args = parse_arguments_ae(50_000,"boards/boards.npy","weights/ae_pretrained.pth")   
+
+    if args.force_clean == "True":
+        if os.path.exists(args.weights_file_path):
+            os.remove(args.weights_file_path)
+            print(f"Deleted {args.weights_file_path}")
+        if os.path.exists(args.board_file_path):
+            os.remove(args.board_file_path)
+            print(f"Deleted {args.board_file_path}")
+
+    if not os.path.exists(args.weights_file_path):
+        print("Generating boards for autoencoder")
+        collect_boards(args)
+        print("Training autoencoder")
+        pretrain_ae(args)
+    else:
+        print("Skipping autoencoder training, weights already exists")
