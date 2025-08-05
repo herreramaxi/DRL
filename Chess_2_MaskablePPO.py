@@ -25,7 +25,7 @@ if __name__ == "__main__":
     if not os.path.exists(args.model_path):
         print(f"Training '{args.agent_name}' agent using device '{device}' and '{args.n_envs}' parallel environments...")
         
-        env = make_vec_env(make_env_masking_enabled, n_envs=args.n_envs, vec_env_cls=SubprocVecEnv, monitor_dir = "monitor")
+        env = make_vec_env(make_env_masking_enabled, n_envs=args.n_envs, vec_env_cls=SubprocVecEnv)
         print("Active env processes:", len(env.processes))
 
         important2(f"share_features_extractor: {args.share_features_extractor}")
