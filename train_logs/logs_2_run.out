@@ -1,0 +1,1487 @@
+nohup: ignoring input
+[0;37mParsed arguments:[0m
+[0;37m   n_samples: 100000[0m
+[0;37m   board_file_path: boards/boards.npy[0m
+[0;37m   weights_file_path: weights/ae_pretrained.pth[0m
+[0;37m   n_epochs: 20[0m
+[0;37m   force_clean: False[0m
+Skipping autoencoder training, weights already exists
+[0;37mParsed arguments:[0m
+[0;37m   n_samples: 100000[0m
+[0;37m   board_file_path: boards/board_seqs.npy[0m
+[0;37m   weights_file_path: weights/ae_rnn_pretrained.pth[0m
+[0;37m   n_epochs: 20[0m
+[0;37m   force_clean: False[0m
+Skipping autoencoder training, weights already exists
+[0;37mParsed arguments:[0m
+[0;37m   agent_name: 1_PPO[0m
+[0;37m   model_path: models/1_PPO_20250804_174015.zip[0m
+[0;37m   log_dir: ./chess_logs[0m
+[0;37m   total_timesteps: 1000000[0m
+[0;37m   n_envs: 16[0m
+[0;37m   n_steps: 16384[0m
+[0;37m   batch_size: 16384[0m
+[0;37m   n_epochs: 10[0m
+[0;37m   n_samples_ae: 1000000[0m
+[0;37m   n_epochs_ae: 20[0m
+[0;37m   force_clean_ae: False[0m
+[0;37m   share_features_extractor: True[0m
+[0;37m   print_model_only: False[0m
+Training '1_PPO' agent using device 'cuda' and '16' parallel environments...
+[0;35m-> share_features_extractor: True[0m
+Using cuda device
+[0;36m-> Model summary:[0m
+=================================================================
+Layer (type:depth-idx)                   Param #
+=================================================================
+MultiInputActorCriticPolicy              --
+├─CombinedExtractor: 1-1                 --
+│    └─ModuleDict: 2-1                   --
+│    │    └─Flatten: 3-1                 --
+│    │    └─Flatten: 3-2                 --
+├─CombinedExtractor: 1-2                 --
+│    └─ModuleDict: 2-2                   --
+│    │    └─Flatten: 3-3                 --
+│    │    └─Flatten: 3-4                 --
+├─CombinedExtractor: 1-3                 --
+│    └─ModuleDict: 2-3                   --
+│    │    └─Flatten: 3-5                 --
+│    │    └─Flatten: 3-6                 --
+├─MlpExtractor: 1-4                      --
+│    └─Sequential: 2-4                   --
+│    │    └─Linear: 3-7                  61,952
+│    │    └─Tanh: 3-8                    --
+│    │    └─Linear: 3-9                  4,160
+│    │    └─Tanh: 3-10                   --
+│    └─Sequential: 2-5                   --
+│    │    └─Linear: 3-11                 61,952
+│    │    └─Tanh: 3-12                   --
+│    │    └─Linear: 3-13                 4,160
+│    │    └─Tanh: 3-14                   --
+├─Linear: 1-5                            61,230
+├─Linear: 1-6                            65
+=================================================================
+Total params: 193,519
+Trainable params: 193,519
+Non-trainable params: 0
+=================================================================
+Logging to ./chess_logs/1_PPO_1
+---------------------------------
+| custom/            |          |
+|    draws           | 0        |
+|    episodes        | 2        |
+|    invalid_moves   | 257769   |
+|    losses          | 2        |
+|    valid_moves     | 2231     |
+|    win_rate        | 0        |
+|    wins            | 0        |
+| rollout/           |          |
+|    ep_len_mean     | 100      |
+|    ep_rew_mean     | -9.95    |
+| time/              |          |
+|    fps             | 6110     |
+|    iterations      | 1        |
+|    time_elapsed    | 42       |
+|    total_timesteps | 262144   |
+---------------------------------
+----------------------------------------
+| custom/                 |            |
+|    draws                | 0          |
+|    episodes             | 4          |
+|    invalid_moves        | 515337     |
+|    losses               | 4          |
+|    valid_moves          | 4663       |
+|    win_rate             | 0          |
+|    wins                 | 0          |
+| rollout/                |            |
+|    ep_len_mean          | 100        |
+|    ep_rew_mean          | -9.95      |
+| time/                   |            |
+|    fps                  | 5568       |
+|    iterations           | 2          |
+|    time_elapsed         | 94         |
+|    total_timesteps      | 524288     |
+| train/                  |            |
+|    approx_kl            | 0.00450343 |
+|    clip_fraction        | 0.0133     |
+|    clip_range           | 0.2        |
+|    entropy_loss         | -6.85      |
+|    explained_variance   | -0.00336   |
+|    learning_rate        | 0.0001     |
+|    loss                 | -0.0784    |
+|    n_updates            | 10         |
+|    policy_gradient_loss | -0.00431   |
+|    value_loss           | 0.226      |
+----------------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 11          |
+|    invalid_moves        | 772330      |
+|    losses               | 9           |
+|    valid_moves          | 7670        |
+|    win_rate             | 0.182       |
+|    wins                 | 2           |
+| rollout/                |             |
+|    ep_len_mean          | 99.7        |
+|    ep_rew_mean          | -11.5       |
+| time/                   |             |
+|    fps                  | 5396        |
+|    iterations           | 3           |
+|    time_elapsed         | 145         |
+|    total_timesteps      | 786432      |
+| train/                  |             |
+|    approx_kl            | 0.002957371 |
+|    clip_fraction        | 0.0176      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -6.84       |
+|    explained_variance   | -0.00793    |
+|    learning_rate        | 0.0001      |
+|    loss                 | -0.0773     |
+|    n_updates            | 20          |
+|    policy_gradient_loss | -0.00452    |
+|    value_loss           | 0.216       |
+-----------------------------------------
+------------------------------------------
+| custom/                 |              |
+|    draws                | 0            |
+|    episodes             | 17           |
+|    invalid_moves        | 1028918      |
+|    losses               | 12           |
+|    valid_moves          | 11082        |
+|    win_rate             | 0.294        |
+|    wins                 | 5            |
+| rollout/                |              |
+|    ep_len_mean          | 100          |
+|    ep_rew_mean          | -9.92        |
+| time/                   |              |
+|    fps                  | 5261         |
+|    iterations           | 4            |
+|    time_elapsed         | 199          |
+|    total_timesteps      | 1048576      |
+| train/                  |              |
+|    approx_kl            | 0.0021551717 |
+|    clip_fraction        | 0.019        |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -6.84        |
+|    explained_variance   | -2.43e-05    |
+|    learning_rate        | 0.0001       |
+|    loss                 | -0.0737      |
+|    n_updates            | 30           |
+|    policy_gradient_loss | -0.00208     |
+|    value_loss           | 0.751        |
+------------------------------------------
+[0;32m-> Model saved on models/1_PPO_20250804_174015.zip[0m
+Initializing MiniChessEnv: 5x5 board with invalid action masking =False, original_step=False
+Evaluating 1_PPO agent...
+[0;36m-> Mean Reward: -10.00 +/- 0.00[0m
+[0;37mParsed arguments:[0m
+[0;37m   agent_name: 2_MaskablePPO_Baseline[0m
+[0;37m   model_path: models/2_MaskablePPO_Baseline_20250804_174357.zip[0m
+[0;37m   log_dir: ./chess_logs[0m
+[0;37m   total_timesteps: 1000000[0m
+[0;37m   n_envs: 16[0m
+[0;37m   n_steps: 16384[0m
+[0;37m   batch_size: 16384[0m
+[0;37m   n_epochs: 10[0m
+[0;37m   n_samples_ae: 1000000[0m
+[0;37m   n_epochs_ae: 20[0m
+[0;37m   force_clean_ae: False[0m
+[0;37m   share_features_extractor: True[0m
+[0;37m   print_model_only: False[0m
+Training '2_MaskablePPO_Baseline' agent using device 'cuda' and '16' parallel environments...
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:214: UserWarning: constant_fn() is deprecated, please use ConstantSchedule() instead
+  warnings.warn("constant_fn() is deprecated, please use ConstantSchedule() instead")
+[0;35m-> share_features_extractor: True[0m
+Using cuda device
+[0;36m-> Model summary:[0m
+=================================================================
+Layer (type:depth-idx)                   Param #
+=================================================================
+MaskableMultiInputActorCriticPolicy      --
+├─CombinedExtractor: 1-1                 --
+│    └─ModuleDict: 2-1                   --
+│    │    └─Flatten: 3-1                 --
+├─CombinedExtractor: 1-2                 --
+│    └─ModuleDict: 2-2                   --
+│    │    └─Flatten: 3-2                 --
+├─CombinedExtractor: 1-3                 --
+│    └─ModuleDict: 2-3                   --
+│    │    └─Flatten: 3-3                 --
+├─MlpExtractor: 1-4                      --
+│    └─Sequential: 2-4                   --
+│    │    └─Linear: 3-4                  1,664
+│    │    └─Tanh: 3-5                    --
+│    │    └─Linear: 3-6                  4,160
+│    │    └─Tanh: 3-7                    --
+│    └─Sequential: 2-5                   --
+│    │    └─Linear: 3-8                  1,664
+│    │    └─Tanh: 3-9                    --
+│    │    └─Linear: 3-10                 4,160
+│    │    └─Tanh: 3-11                   --
+├─Linear: 1-5                            61,230
+├─Linear: 1-6                            65
+=================================================================
+Total params: 72,943
+Trainable params: 72,943
+Non-trainable params: 0
+=================================================================
+Logging to ./chess_logs/2_MaskablePPO_Baseline_1
+---------------------------------
+| custom/            |          |
+|    draws           | 0        |
+|    episodes        | 13304    |
+|    invalid_moves   | 0        |
+|    losses          | 6596     |
+|    valid_moves     | 260000   |
+|    win_rate        | 0.504    |
+|    wins            | 6708     |
+| rollout/           |          |
+|    ep_len_mean     | 17.8     |
+|    ep_rew_mean     | -11.1    |
+| time/              |          |
+|    fps             | 2504     |
+|    iterations      | 1        |
+|    time_elapsed    | 104      |
+|    total_timesteps | 262144   |
+---------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 26897       |
+|    invalid_moves        | 0           |
+|    losses               | 12798       |
+|    valid_moves          | 520000      |
+|    win_rate             | 0.524       |
+|    wins                 | 14099       |
+| rollout/                |             |
+|    ep_len_mean          | 16.5        |
+|    ep_rew_mean          | 2.99        |
+| time/                   |             |
+|    fps                  | 2384        |
+|    iterations           | 2           |
+|    time_elapsed         | 219         |
+|    total_timesteps      | 524288      |
+| train/                  |             |
+|    approx_kl            | 0.001352293 |
+|    clip_fraction        | 0.00242     |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.58       |
+|    explained_variance   | 0.000469    |
+|    learning_rate        | 0.0001      |
+|    loss                 | 750         |
+|    n_updates            | 10          |
+|    policy_gradient_loss | -0.00616    |
+|    value_loss           | 1.44e+03    |
+-----------------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 40805       |
+|    invalid_moves        | 0           |
+|    losses               | 18667       |
+|    valid_moves          | 780000      |
+|    win_rate             | 0.543       |
+|    wins                 | 22138       |
+| rollout/                |             |
+|    ep_len_mean          | 19.9        |
+|    ep_rew_mean          | 16          |
+| time/                   |             |
+|    fps                  | 2346        |
+|    iterations           | 3           |
+|    time_elapsed         | 335         |
+|    total_timesteps      | 786432      |
+| train/                  |             |
+|    approx_kl            | 0.001488633 |
+|    clip_fraction        | 0.00429     |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.58       |
+|    explained_variance   | 0.00365     |
+|    learning_rate        | 0.0001      |
+|    loss                 | 766         |
+|    n_updates            | 20          |
+|    policy_gradient_loss | -0.00741    |
+|    value_loss           | 1.47e+03    |
+-----------------------------------------
+------------------------------------------
+| custom/                 |              |
+|    draws                | 0            |
+|    episodes             | 55342        |
+|    invalid_moves        | 0            |
+|    losses               | 23974        |
+|    valid_moves          | 1040000      |
+|    win_rate             | 0.567        |
+|    wins                 | 31368        |
+| rollout/                |              |
+|    ep_len_mean          | 15.9         |
+|    ep_rew_mean          | 36.7         |
+| time/                   |              |
+|    fps                  | 2322         |
+|    iterations           | 4            |
+|    time_elapsed         | 451          |
+|    total_timesteps      | 1048576      |
+| train/                  |              |
+|    approx_kl            | 0.0020814007 |
+|    clip_fraction        | 0.0072       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -2.57        |
+|    explained_variance   | 0.00632      |
+|    learning_rate        | 0.0001       |
+|    loss                 | 734          |
+|    n_updates            | 30           |
+|    policy_gradient_loss | -0.0101      |
+|    value_loss           | 1.49e+03     |
+------------------------------------------
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+[0;32m-> Model saved on models/2_MaskablePPO_Baseline_20250804_174357.zip[0m
+Initializing MiniChessEnv: 5x5 board with invalid action masking =True, original_step=False
+Evaluating 2_MaskablePPO_Baseline agent...
+[0;36m-> Mean Reward: 154.61 +/- 45.05[0m
+[0;37mParsed arguments:[0m
+[0;37m   agent_name: 3_MaskableRecurrentPPO[0m
+[0;37m   model_path: models/3_MaskableRecurrentPPO_20250804_175149.zip[0m
+[0;37m   log_dir: ./chess_logs[0m
+[0;37m   total_timesteps: 1000000[0m
+[0;37m   n_envs: 16[0m
+[0;37m   n_steps: 16384[0m
+[0;37m   batch_size: 16384[0m
+[0;37m   n_epochs: 10[0m
+[0;37m   n_samples_ae: 1000000[0m
+[0;37m   n_epochs_ae: 20[0m
+[0;37m   force_clean_ae: False[0m
+[0;37m   share_features_extractor: True[0m
+[0;37m   print_model_only: False[0m
+Training '3_MaskableRecurrentPPO' agent using device 'cuda' and '16' parallel environments...
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:214: UserWarning: constant_fn() is deprecated, please use ConstantSchedule() instead
+  warnings.warn("constant_fn() is deprecated, please use ConstantSchedule() instead")
+[0;35m-> share_features_extractor: True[0m
+Using cuda device
+[0;36m-> Model summary:[0m
+======================================================================
+Layer (type:depth-idx)                        Param #
+======================================================================
+MaskableRecurrentMultiInputActorCriticPolicy  --
+├─CombinedExtractor: 1-1                      --
+│    └─ModuleDict: 2-1                        --
+│    │    └─Flatten: 3-1                      --
+├─CombinedExtractor: 1-2                      --
+│    └─ModuleDict: 2-2                        --
+│    │    └─Flatten: 3-2                      --
+├─CombinedExtractor: 1-3                      --
+│    └─ModuleDict: 2-3                        --
+│    │    └─Flatten: 3-3                      --
+├─MlpExtractor: 1-4                           --
+│    └─Sequential: 2-4                        --
+│    │    └─Linear: 3-4                       16,448
+│    │    └─Tanh: 3-5                         --
+│    │    └─Linear: 3-6                       4,160
+│    │    └─Tanh: 3-7                         --
+│    └─Sequential: 2-5                        --
+│    │    └─Linear: 3-8                       16,448
+│    │    └─Tanh: 3-9                         --
+│    │    └─Linear: 3-10                      4,160
+│    │    └─Tanh: 3-11                        --
+├─Linear: 1-5                                 61,230
+├─Linear: 1-6                                 65
+├─LSTM: 1-7                                   289,792
+├─LSTM: 1-8                                   289,792
+======================================================================
+Total params: 682,095
+Trainable params: 682,095
+Non-trainable params: 0
+======================================================================
+Logging to ./chess_logs/3_MaskableRecurrentPPO_1
+---------------------------------
+| custom/            |          |
+|    draws           | 0        |
+|    episodes        | 13422    |
+|    invalid_moves   | 0        |
+|    losses          | 6533     |
+|    valid_moves     | 260000   |
+|    win_rate        | 0.513    |
+|    wins            | 6889     |
+| rollout/           |          |
+|    ep_len_mean     | 19       |
+|    ep_rew_mean     | 27.2     |
+| time/              |          |
+|    fps             | 2138     |
+|    iterations      | 1        |
+|    time_elapsed    | 122      |
+|    total_timesteps | 262144   |
+---------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 26835       |
+|    invalid_moves        | 0           |
+|    losses               | 12913       |
+|    valid_moves          | 520000      |
+|    win_rate             | 0.519       |
+|    wins                 | 13922       |
+| rollout/                |             |
+|    ep_len_mean          | 17.4        |
+|    ep_rew_mean          | 44.2        |
+| time/                   |             |
+|    fps                  | 1521        |
+|    iterations           | 2           |
+|    time_elapsed         | 344         |
+|    total_timesteps      | 524288      |
+| train/                  |             |
+|    approx_kl            | 0.000255561 |
+|    clip_fraction        | 0.000135    |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.58       |
+|    explained_variance   | 0.000147    |
+|    learning_rate        | 0.0001      |
+|    loss                 | 709         |
+|    n_updates            | 10          |
+|    policy_gradient_loss | -0.00219    |
+|    value_loss           | 1.45e+03    |
+-----------------------------------------
+-------------------------------------------
+| custom/                 |               |
+|    draws                | 0             |
+|    episodes             | 40474         |
+|    invalid_moves        | 0             |
+|    losses               | 19170         |
+|    valid_moves          | 780000        |
+|    win_rate             | 0.526         |
+|    wins                 | 21304         |
+| rollout/                |               |
+|    ep_len_mean          | 17.8          |
+|    ep_rew_mean          | -3.26         |
+| time/                   |               |
+|    fps                  | 1388          |
+|    iterations           | 3             |
+|    time_elapsed         | 566           |
+|    total_timesteps      | 786432        |
+| train/                  |               |
+|    approx_kl            | 0.00030424056 |
+|    clip_fraction        | 0.000253      |
+|    clip_range           | 0.2           |
+|    entropy_loss         | -2.58         |
+|    explained_variance   | 0.0072        |
+|    learning_rate        | 0.0001        |
+|    loss                 | 732           |
+|    n_updates            | 20            |
+|    policy_gradient_loss | -0.00265      |
+|    value_loss           | 1.44e+03      |
+-------------------------------------------
+-------------------------------------------
+| custom/                 |               |
+|    draws                | 0             |
+|    episodes             | 54169         |
+|    invalid_moves        | 0             |
+|    losses               | 25164         |
+|    valid_moves          | 1040000       |
+|    win_rate             | 0.535         |
+|    wins                 | 29005         |
+| rollout/                |               |
+|    ep_len_mean          | 19.2          |
+|    ep_rew_mean          | 23.6          |
+| time/                   |               |
+|    fps                  | 1329          |
+|    iterations           | 4             |
+|    time_elapsed         | 788           |
+|    total_timesteps      | 1048576       |
+| train/                  |               |
+|    approx_kl            | 0.00046306517 |
+|    clip_fraction        | 0.000664      |
+|    clip_range           | 0.2           |
+|    entropy_loss         | -2.58         |
+|    explained_variance   | 0.0102        |
+|    learning_rate        | 0.0001        |
+|    loss                 | 746           |
+|    n_updates            | 30            |
+|    policy_gradient_loss | -0.0034       |
+|    value_loss           | 1.46e+03      |
+-------------------------------------------
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+[0;32m-> Model saved on models/3_MaskableRecurrentPPO_20250804_175149.zip[0m
+Initializing MiniChessEnv: 5x5 board with invalid action masking =True, original_step=False
+Evaluating 3_MaskableRecurrentPPO agent...
+[0;36m-> Mean Reward: 158.43 +/- 45.41[0m
+[0;37mParsed arguments:[0m
+[0;37m   n_samples: 1000000[0m
+[0;37m   board_file_path: boards/boards.npy[0m
+[0;37m   weights_file_path: weights/ae_pretrained.pth[0m
+[0;37m   n_epochs: 20[0m
+[0;37m   force_clean: False[0m
+Skipping autoencoder training, weights already exists
+[0;37mParsed arguments:[0m
+[0;37m   agent_name: 4_FF_Autoencoder_MaskablePPO[0m
+[0;37m   model_path: models/4_FF_Autoencoder_MaskablePPO_20250804_180647.zip[0m
+[0;37m   log_dir: ./chess_logs[0m
+[0;37m   total_timesteps: 1000000[0m
+[0;37m   n_envs: 16[0m
+[0;37m   n_steps: 16384[0m
+[0;37m   batch_size: 16384[0m
+[0;37m   n_epochs: 10[0m
+[0;37m   n_samples_ae: 1000000[0m
+[0;37m   n_epochs_ae: 20[0m
+[0;37m   force_clean_ae: False[0m
+[0;37m   share_features_extractor: True[0m
+[0;37m   print_model_only: False[0m
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:214: UserWarning: constant_fn() is deprecated, please use ConstantSchedule() instead
+  warnings.warn("constant_fn() is deprecated, please use ConstantSchedule() instead")
+[0;35m-> share_features_extractor: True[0m
+Using cuda device
+[0;36m-> Model summary:[0m
+=================================================================
+Layer (type:depth-idx)                   Param #
+=================================================================
+MaskableMultiInputActorCriticPolicy      --
+├─FrozenAEFeatureExtractor: 1-1          --
+│    └─Sequential: 2-1                   --
+│    │    └─Flatten: 3-1                 --
+│    │    └─Linear: 3-2                  (1,664)
+│    │    └─ReLU: 3-3                    --
+│    │    └─Linear: 3-4                  (520)
+├─FrozenAEFeatureExtractor: 1-2          (recursive)
+│    └─Sequential: 2-2                   (recursive)
+│    │    └─Flatten: 3-5                 --
+│    │    └─Linear: 3-6                  (recursive)
+│    │    └─ReLU: 3-7                    --
+│    │    └─Linear: 3-8                  (recursive)
+├─FrozenAEFeatureExtractor: 1-3          (recursive)
+│    └─Sequential: 2-3                   (recursive)
+│    │    └─Flatten: 3-9                 --
+│    │    └─Linear: 3-10                 (recursive)
+│    │    └─ReLU: 3-11                   --
+│    │    └─Linear: 3-12                 (recursive)
+├─MlpExtractor: 1-4                      --
+│    └─Sequential: 2-4                   --
+│    │    └─Linear: 3-13                 576
+│    │    └─Tanh: 3-14                   --
+│    │    └─Linear: 3-15                 4,160
+│    │    └─Tanh: 3-16                   --
+│    └─Sequential: 2-5                   --
+│    │    └─Linear: 3-17                 576
+│    │    └─Tanh: 3-18                   --
+│    │    └─Linear: 3-19                 4,160
+│    │    └─Tanh: 3-20                   --
+├─Linear: 1-5                            61,230
+├─Linear: 1-6                            65
+=================================================================
+Total params: 72,951
+Trainable params: 70,767
+Non-trainable params: 2,184
+=================================================================
+Logging to ./chess_logs/4_FF_Autoencoder_MaskablePPO_1
+---------------------------------
+| custom/            |          |
+|    draws           | 0        |
+|    episodes        | 13290    |
+|    invalid_moves   | 0        |
+|    losses          | 6566     |
+|    valid_moves     | 260000   |
+|    win_rate        | 0.506    |
+|    wins            | 6724     |
+| rollout/           |          |
+|    ep_len_mean     | 20.2     |
+|    ep_rew_mean     | -5.12    |
+| time/              |          |
+|    fps             | 2444     |
+|    iterations      | 1        |
+|    time_elapsed    | 107      |
+|    total_timesteps | 262144   |
+---------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 27128       |
+|    invalid_moves        | 0           |
+|    losses               | 12270       |
+|    valid_moves          | 520000      |
+|    win_rate             | 0.548       |
+|    wins                 | 14858       |
+| rollout/                |             |
+|    ep_len_mean          | 17.1        |
+|    ep_rew_mean          | 34.1        |
+| time/                   |             |
+|    fps                  | 2332        |
+|    iterations           | 2           |
+|    time_elapsed         | 224         |
+|    total_timesteps      | 524288      |
+| train/                  |             |
+|    approx_kl            | 0.009081446 |
+|    clip_fraction        | 0.041       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.58       |
+|    explained_variance   | 0.000147    |
+|    learning_rate        | 0.0001      |
+|    loss                 | 719         |
+|    n_updates            | 10          |
+|    policy_gradient_loss | -0.0104     |
+|    value_loss           | 1.44e+03    |
+-----------------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 41853       |
+|    invalid_moves        | 0           |
+|    losses               | 17337       |
+|    valid_moves          | 780000      |
+|    win_rate             | 0.586       |
+|    wins                 | 24516       |
+| rollout/                |             |
+|    ep_len_mean          | 18.8        |
+|    ep_rew_mean          | 46.5        |
+| time/                   |             |
+|    fps                  | 2292        |
+|    iterations           | 3           |
+|    time_elapsed         | 343         |
+|    total_timesteps      | 786432      |
+| train/                  |             |
+|    approx_kl            | 0.009877851 |
+|    clip_fraction        | 0.0436      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.55       |
+|    explained_variance   | 0.000593    |
+|    learning_rate        | 0.0001      |
+|    loss                 | 772         |
+|    n_updates            | 20          |
+|    policy_gradient_loss | -0.0109     |
+|    value_loss           | 1.5e+03     |
+-----------------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 57625       |
+|    invalid_moves        | 0           |
+|    losses               | 21583       |
+|    valid_moves          | 1040000     |
+|    win_rate             | 0.625       |
+|    wins                 | 36042       |
+| rollout/                |             |
+|    ep_len_mean          | 15.4        |
+|    ep_rew_mean          | 66.5        |
+| time/                   |             |
+|    fps                  | 2267        |
+|    iterations           | 4           |
+|    time_elapsed         | 462         |
+|    total_timesteps      | 1048576     |
+| train/                  |             |
+|    approx_kl            | 0.011313339 |
+|    clip_fraction        | 0.0873      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.51       |
+|    explained_variance   | 0.000807    |
+|    learning_rate        | 0.0001      |
+|    loss                 | 791         |
+|    n_updates            | 30          |
+|    policy_gradient_loss | -0.0165     |
+|    value_loss           | 1.58e+03    |
+-----------------------------------------
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+[0;32m-> Model saved on models/4_FF_Autoencoder_MaskablePPO_20250804_180647.zip[0m
+Initializing MiniChessEnv: 5x5 board with invalid action masking =True, original_step=False
+Evaluating 4_FF_Autoencoder_MaskablePPO agent...
+[0;36m-> Mean Reward: 162.87 +/- 3.58[0m
+[0;37mParsed arguments:[0m
+[0;37m   n_samples: 1000000[0m
+[0;37m   board_file_path: boards/boards.npy[0m
+[0;37m   weights_file_path: weights/ae_pretrained.pth[0m
+[0;37m   n_epochs: 20[0m
+[0;37m   force_clean: False[0m
+Skipping autoencoder training, weights already exists
+[0;37mParsed arguments:[0m
+[0;37m   agent_name: 5_FF_Autoencoder_MaskableRecurrentPPO[0m
+[0;37m   model_path: models/5_FF_Autoencoder_MaskableRecurrentPPO_20250804_181453.zip[0m
+[0;37m   log_dir: ./chess_logs[0m
+[0;37m   total_timesteps: 1000000[0m
+[0;37m   n_envs: 16[0m
+[0;37m   n_steps: 16384[0m
+[0;37m   batch_size: 16384[0m
+[0;37m   n_epochs: 10[0m
+[0;37m   n_samples_ae: 1000000[0m
+[0;37m   n_epochs_ae: 20[0m
+[0;37m   force_clean_ae: False[0m
+[0;37m   share_features_extractor: True[0m
+[0;37m   print_model_only: False[0m
+Training '5_FF_Autoencoder_MaskableRecurrentPPO' agent using device 'cuda' and '16' parallel environments...
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:214: UserWarning: constant_fn() is deprecated, please use ConstantSchedule() instead
+  warnings.warn("constant_fn() is deprecated, please use ConstantSchedule() instead")
+[0;35m-> share_features_extractor: True[0m
+Using cuda device
+[0;36m-> Model summary:[0m
+======================================================================
+Layer (type:depth-idx)                        Param #
+======================================================================
+MaskableRecurrentMultiInputActorCriticPolicy  --
+├─FrozenAEFeatureExtractor: 1-1               --
+│    └─Sequential: 2-1                        --
+│    │    └─Flatten: 3-1                      --
+│    │    └─Linear: 3-2                       (1,664)
+│    │    └─ReLU: 3-3                         --
+│    │    └─Linear: 3-4                       (520)
+├─FrozenAEFeatureExtractor: 1-2               (recursive)
+│    └─Sequential: 2-2                        (recursive)
+│    │    └─Flatten: 3-5                      --
+│    │    └─Linear: 3-6                       (recursive)
+│    │    └─ReLU: 3-7                         --
+│    │    └─Linear: 3-8                       (recursive)
+├─FrozenAEFeatureExtractor: 1-3               (recursive)
+│    └─Sequential: 2-3                        (recursive)
+│    │    └─Flatten: 3-9                      --
+│    │    └─Linear: 3-10                      (recursive)
+│    │    └─ReLU: 3-11                        --
+│    │    └─Linear: 3-12                      (recursive)
+├─MlpExtractor: 1-4                           --
+│    └─Sequential: 2-4                        --
+│    │    └─Linear: 3-13                      16,448
+│    │    └─Tanh: 3-14                        --
+│    │    └─Linear: 3-15                      4,160
+│    │    └─Tanh: 3-16                        --
+│    └─Sequential: 2-5                        --
+│    │    └─Linear: 3-17                      16,448
+│    │    └─Tanh: 3-18                        --
+│    │    └─Linear: 3-19                      4,160
+│    │    └─Tanh: 3-20                        --
+├─Linear: 1-5                                 61,230
+├─Linear: 1-6                                 65
+├─LSTM: 1-7                                   272,384
+├─LSTM: 1-8                                   272,384
+======================================================================
+Total params: 649,463
+Trainable params: 647,279
+Non-trainable params: 2,184
+======================================================================
+Logging to ./chess_logs/5_FF_Autoencoder_MaskableRecurrentPPO_1
+---------------------------------
+| custom/            |          |
+|    draws           | 0        |
+|    episodes        | 13352    |
+|    invalid_moves   | 0        |
+|    losses          | 6626     |
+|    valid_moves     | 260000   |
+|    win_rate        | 0.504    |
+|    wins            | 6726     |
+| rollout/           |          |
+|    ep_len_mean     | 19.2     |
+|    ep_rew_mean     | 20.6     |
+| time/              |          |
+|    fps             | 2104     |
+|    iterations      | 1        |
+|    time_elapsed    | 124      |
+|    total_timesteps | 262144   |
+---------------------------------
+----------------------------------------
+| custom/                 |            |
+|    draws                | 0          |
+|    episodes             | 27342      |
+|    invalid_moves        | 0          |
+|    losses               | 12359      |
+|    valid_moves          | 520000     |
+|    win_rate             | 0.548      |
+|    wins                 | 14983      |
+| rollout/                |            |
+|    ep_len_mean          | 16.1       |
+|    ep_rew_mean          | 36.6       |
+| time/                   |            |
+|    fps                  | 1509       |
+|    iterations           | 2          |
+|    time_elapsed         | 347        |
+|    total_timesteps      | 524288     |
+| train/                  |            |
+|    approx_kl            | 0.01033525 |
+|    clip_fraction        | 0.0406     |
+|    clip_range           | 0.2        |
+|    entropy_loss         | -2.59      |
+|    explained_variance   | -9.18e-06  |
+|    learning_rate        | 0.0001     |
+|    loss                 | 726        |
+|    n_updates            | 10         |
+|    policy_gradient_loss | -0.00832   |
+|    value_loss           | 1.45e+03   |
+----------------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 42370       |
+|    invalid_moves        | 0           |
+|    losses               | 17282       |
+|    valid_moves          | 780000      |
+|    win_rate             | 0.592       |
+|    wins                 | 25088       |
+| rollout/                |             |
+|    ep_len_mean          | 17.7        |
+|    ep_rew_mean          | 51.8        |
+| time/                   |             |
+|    fps                  | 1368        |
+|    iterations           | 3           |
+|    time_elapsed         | 574         |
+|    total_timesteps      | 786432      |
+| train/                  |             |
+|    approx_kl            | 0.012448745 |
+|    clip_fraction        | 0.143       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.54       |
+|    explained_variance   | 0.000714    |
+|    learning_rate        | 0.0001      |
+|    loss                 | 758         |
+|    n_updates            | 20          |
+|    policy_gradient_loss | -0.017      |
+|    value_loss           | 1.51e+03    |
+-----------------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 58741       |
+|    invalid_moves        | 0           |
+|    losses               | 21573       |
+|    valid_moves          | 1040000     |
+|    win_rate             | 0.633       |
+|    wins                 | 37168       |
+| rollout/                |             |
+|    ep_len_mean          | 16.2        |
+|    ep_rew_mean          | 85.9        |
+| time/                   |             |
+|    fps                  | 1295        |
+|    iterations           | 4           |
+|    time_elapsed         | 809         |
+|    total_timesteps      | 1048576     |
+| train/                  |             |
+|    approx_kl            | 0.010549266 |
+|    clip_fraction        | 0.108       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.49       |
+|    explained_variance   | 0.00451     |
+|    learning_rate        | 0.0001      |
+|    loss                 | 807         |
+|    n_updates            | 30          |
+|    policy_gradient_loss | -0.0188     |
+|    value_loss           | 1.6e+03     |
+-----------------------------------------
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+[0;32m-> Model saved on models/5_FF_Autoencoder_MaskableRecurrentPPO_20250804_181453.zip[0m
+Initializing MiniChessEnv: 5x5 board with invalid action masking =True, original_step=False
+Evaluating 5_FF_Autoencoder_MaskableRecurrentPPO agent...
+[0;36m-> Mean Reward: 156.21 +/- 43.32[0m
+[0;37mParsed arguments:[0m
+[0;37m   n_samples: 1000000[0m
+[0;37m   board_file_path: boards/board_seqs.npy[0m
+[0;37m   weights_file_path: weights/ae_rnn_pretrained.pth[0m
+[0;37m   n_epochs: 20[0m
+[0;37m   force_clean: False[0m
+Skipping autoencoder training, weights already exists
+[0;37mParsed arguments:[0m
+[0;37m   agent_name: 6_LSTM_Autoencoder_MaskablePPO[0m
+[0;37m   model_path: models/6_LSTM_Autoencoder_MaskablePPO_20250804_183029.zip[0m
+[0;37m   log_dir: ./chess_logs[0m
+[0;37m   total_timesteps: 1000000[0m
+[0;37m   n_envs: 16[0m
+[0;37m   n_steps: 16384[0m
+[0;37m   batch_size: 16384[0m
+[0;37m   n_epochs: 10[0m
+[0;37m   n_samples_ae: 1000000[0m
+[0;37m   n_epochs_ae: 20[0m
+[0;37m   force_clean_ae: False[0m
+[0;37m   share_features_extractor: True[0m
+[0;37m   print_model_only: False[0m
+Training '6_LSTM_Autoencoder_MaskablePPO' agent using device 'cuda' and '16' parallel environments...
+/home/herreramaxi/DRL/Chess_6_LSTM_Autoencoder_MaskablePPO.py:62: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ae.load_state_dict(torch.load(AE_WEIGHTS_PATH, map_location=device))
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:214: UserWarning: constant_fn() is deprecated, please use ConstantSchedule() instead
+  warnings.warn("constant_fn() is deprecated, please use ConstantSchedule() instead")
+[0;35m-> share_features_extractor: True[0m
+Using cuda device
+[0;36m-> Model summary:[0m
+======================================================================
+Layer (type:depth-idx)                        Param #
+======================================================================
+MaskableMultiInputActorCriticPolicy           --
+├─LSTMAutoencoderFeatureExtractor: 1-1        --
+│    └─SimpleLSTMAutoencoder: 2-1             --
+│    │    └─LSTM: 3-1                         (23,296)
+│    │    └─Linear: 3-2                       (520)
+│    │    └─Linear: 3-3                       (576)
+│    │    └─LSTM: 3-4                         (33,280)
+│    │    └─Linear: 3-5                       (1,625)
+│    └─SimpleLSTMAutoencoder: 2-2             (recursive)
+│    │    └─LSTM: 3-6                         (recursive)
+│    │    └─Linear: 3-7                       (recursive)
+│    │    └─Linear: 3-8                       (recursive)
+│    │    └─LSTM: 3-9                         (recursive)
+│    │    └─Linear: 3-10                      (recursive)
+│    └─LSTM: 2-3                              (recursive)
+├─LSTMAutoencoderFeatureExtractor: 1-2        (recursive)
+│    └─SimpleLSTMAutoencoder: 2-4             (recursive)
+│    │    └─LSTM: 3-11                        (recursive)
+│    │    └─Linear: 3-12                      (recursive)
+│    │    └─Linear: 3-13                      (recursive)
+│    │    └─LSTM: 3-14                        (recursive)
+│    │    └─Linear: 3-15                      (recursive)
+│    └─SimpleLSTMAutoencoder: 2-5             (recursive)
+│    │    └─LSTM: 3-16                        (recursive)
+│    │    └─Linear: 3-17                      (recursive)
+│    │    └─Linear: 3-18                      (recursive)
+│    │    └─LSTM: 3-19                        (recursive)
+│    │    └─Linear: 3-20                      (recursive)
+│    └─LSTM: 2-6                              (recursive)
+├─LSTMAutoencoderFeatureExtractor: 1-3        (recursive)
+│    └─SimpleLSTMAutoencoder: 2-7             (recursive)
+│    │    └─LSTM: 3-21                        (recursive)
+│    │    └─Linear: 3-22                      (recursive)
+│    │    └─Linear: 3-23                      (recursive)
+│    │    └─LSTM: 3-24                        (recursive)
+│    │    └─Linear: 3-25                      (recursive)
+│    └─SimpleLSTMAutoencoder: 2-8             (recursive)
+│    │    └─LSTM: 3-26                        (recursive)
+│    │    └─Linear: 3-27                      (recursive)
+│    │    └─Linear: 3-28                      (recursive)
+│    │    └─LSTM: 3-29                        (recursive)
+│    │    └─Linear: 3-30                      (recursive)
+│    └─LSTM: 2-9                              (recursive)
+├─MlpExtractor: 1-4                           --
+│    └─Sequential: 2-10                       --
+│    │    └─Linear: 3-31                      576
+│    │    └─Tanh: 3-32                        --
+│    │    └─Linear: 3-33                      4,160
+│    │    └─Tanh: 3-34                        --
+│    └─Sequential: 2-11                       --
+│    │    └─Linear: 3-35                      576
+│    │    └─Tanh: 3-36                        --
+│    │    └─Linear: 3-37                      4,160
+│    │    └─Tanh: 3-38                        --
+├─Linear: 1-5                                 61,230
+├─Linear: 1-6                                 65
+======================================================================
+Total params: 130,064
+Trainable params: 70,767
+Non-trainable params: 59,297
+======================================================================
+Logging to ./chess_logs/6_LSTM_Autoencoder_MaskablePPO_1
+---------------------------------
+| custom/            |          |
+|    draws           | 0        |
+|    episodes        | 13331    |
+|    invalid_moves   | 0        |
+|    losses          | 6585     |
+|    valid_moves     | 260000   |
+|    win_rate        | 0.506    |
+|    wins            | 6746     |
+| rollout/           |          |
+|    ep_len_mean     | 18.9     |
+|    ep_rew_mean     | 7.49     |
+| time/              |          |
+|    fps             | 2399     |
+|    iterations      | 1        |
+|    time_elapsed    | 109      |
+|    total_timesteps | 262144   |
+---------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 27244       |
+|    invalid_moves        | 0           |
+|    losses               | 12558       |
+|    valid_moves          | 520000      |
+|    win_rate             | 0.539       |
+|    wins                 | 14686       |
+| rollout/                |             |
+|    ep_len_mean          | 17          |
+|    ep_rew_mean          | 33.5        |
+| time/                   |             |
+|    fps                  | 2281        |
+|    iterations           | 2           |
+|    time_elapsed         | 229         |
+|    total_timesteps      | 524288      |
+| train/                  |             |
+|    approx_kl            | 0.005210723 |
+|    clip_fraction        | 0.0112      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.59       |
+|    explained_variance   | -8.23e-06   |
+|    learning_rate        | 0.0001      |
+|    loss                 | 707         |
+|    n_updates            | 10          |
+|    policy_gradient_loss | -0.00663    |
+|    value_loss           | 1.45e+03    |
+-----------------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 42016       |
+|    invalid_moves        | 0           |
+|    losses               | 17851       |
+|    valid_moves          | 780000      |
+|    win_rate             | 0.575       |
+|    wins                 | 24165       |
+| rollout/                |             |
+|    ep_len_mean          | 18.7        |
+|    ep_rew_mean          | 44.5        |
+| time/                   |             |
+|    fps                  | 2239        |
+|    iterations           | 3           |
+|    time_elapsed         | 351         |
+|    total_timesteps      | 786432      |
+| train/                  |             |
+|    approx_kl            | 0.006599272 |
+|    clip_fraction        | 0.0201      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.56       |
+|    explained_variance   | 5.69e-05    |
+|    learning_rate        | 0.0001      |
+|    loss                 | 796         |
+|    n_updates            | 20          |
+|    policy_gradient_loss | -0.00955    |
+|    value_loss           | 1.51e+03    |
+-----------------------------------------
+------------------------------------------
+| custom/                 |              |
+|    draws                | 0            |
+|    episodes             | 57852        |
+|    invalid_moves        | 0            |
+|    losses               | 22489        |
+|    valid_moves          | 1040000      |
+|    win_rate             | 0.611        |
+|    wins                 | 35363        |
+| rollout/                |              |
+|    ep_len_mean          | 15.3         |
+|    ep_rew_mean          | 59.5         |
+| time/                   |              |
+|    fps                  | 2213         |
+|    iterations           | 4            |
+|    time_elapsed         | 473          |
+|    total_timesteps      | 1048576      |
+| train/                  |              |
+|    approx_kl            | 0.0074391756 |
+|    clip_fraction        | 0.031        |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -2.54        |
+|    explained_variance   | 8.35e-05     |
+|    learning_rate        | 0.0001       |
+|    loss                 | 817          |
+|    n_updates            | 30           |
+|    policy_gradient_loss | -0.0127      |
+|    value_loss           | 1.59e+03     |
+------------------------------------------
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+[0;32m-> Model saved on models/6_LSTM_Autoencoder_MaskablePPO_20250804_183029.zip[0m
+Initializing MiniChessEnv: 5x5 board with invalid action masking =True, original_step=False
+Evaluating 6_LSTM_Autoencoder_MaskablePPO agent...
+[0;36m-> Mean Reward: 136.27 +/- 87.49[0m
+[0;37mParsed arguments:[0m
+[0;37m   n_samples: 1000000[0m
+[0;37m   board_file_path: boards/board_seqs.npy[0m
+[0;37m   weights_file_path: weights/ae_rnn_pretrained.pth[0m
+[0;37m   n_epochs: 20[0m
+[0;37m   force_clean: False[0m
+Skipping autoencoder training, weights already exists
+[0;37mParsed arguments:[0m
+[0;37m   agent_name: 7_LSTM_Autoencoder_MaskableRecurrentPPO[0m
+[0;37m   model_path: models/7_LSTM_Autoencoder_MaskableRecurrentPPO_20250804_183847.zip[0m
+[0;37m   log_dir: ./chess_logs[0m
+[0;37m   total_timesteps: 1000000[0m
+[0;37m   n_envs: 16[0m
+[0;37m   n_steps: 16384[0m
+[0;37m   batch_size: 16384[0m
+[0;37m   n_epochs: 10[0m
+[0;37m   n_samples_ae: 1000000[0m
+[0;37m   n_epochs_ae: 20[0m
+[0;37m   force_clean_ae: False[0m
+[0;37m   share_features_extractor: True[0m
+[0;37m   print_model_only: False[0m
+Training '7_LSTM_Autoencoder_MaskableRecurrentPPO' agent using device 'cuda' and '16' parallel environments...
+/home/herreramaxi/DRL/Chess_7_LSTM_Autoencoder_MaskableRecurrentPPO.py:48: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  ae.load_state_dict(torch.load(AE_WEIGHTS_PATH, map_location=device))
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:214: UserWarning: constant_fn() is deprecated, please use ConstantSchedule() instead
+  warnings.warn("constant_fn() is deprecated, please use ConstantSchedule() instead")
+[0;35m-> share_features_extractor: True[0m
+Using cuda device
+[0;36m-> Model summary:[0m
+======================================================================
+Layer (type:depth-idx)                        Param #
+======================================================================
+MaskableRecurrentMultiInputActorCriticPolicy  --
+├─LSTMAutoencoderFeatureExtractor: 1-1        --
+│    └─SimpleLSTMAutoencoder: 2-1             --
+│    │    └─LSTM: 3-1                         (23,296)
+│    │    └─Linear: 3-2                       (520)
+│    │    └─Linear: 3-3                       (576)
+│    │    └─LSTM: 3-4                         (33,280)
+│    │    └─Linear: 3-5                       (1,625)
+│    └─SimpleLSTMAutoencoder: 2-2             (recursive)
+│    │    └─LSTM: 3-6                         (recursive)
+│    │    └─Linear: 3-7                       (recursive)
+│    │    └─Linear: 3-8                       (recursive)
+│    │    └─LSTM: 3-9                         (recursive)
+│    │    └─Linear: 3-10                      (recursive)
+│    └─LSTM: 2-3                              (recursive)
+├─LSTMAutoencoderFeatureExtractor: 1-2        (recursive)
+│    └─SimpleLSTMAutoencoder: 2-4             (recursive)
+│    │    └─LSTM: 3-11                        (recursive)
+│    │    └─Linear: 3-12                      (recursive)
+│    │    └─Linear: 3-13                      (recursive)
+│    │    └─LSTM: 3-14                        (recursive)
+│    │    └─Linear: 3-15                      (recursive)
+│    └─SimpleLSTMAutoencoder: 2-5             (recursive)
+│    │    └─LSTM: 3-16                        (recursive)
+│    │    └─Linear: 3-17                      (recursive)
+│    │    └─Linear: 3-18                      (recursive)
+│    │    └─LSTM: 3-19                        (recursive)
+│    │    └─Linear: 3-20                      (recursive)
+│    └─LSTM: 2-6                              (recursive)
+├─LSTMAutoencoderFeatureExtractor: 1-3        (recursive)
+│    └─SimpleLSTMAutoencoder: 2-7             (recursive)
+│    │    └─LSTM: 3-21                        (recursive)
+│    │    └─Linear: 3-22                      (recursive)
+│    │    └─Linear: 3-23                      (recursive)
+│    │    └─LSTM: 3-24                        (recursive)
+│    │    └─Linear: 3-25                      (recursive)
+│    └─SimpleLSTMAutoencoder: 2-8             (recursive)
+│    │    └─LSTM: 3-26                        (recursive)
+│    │    └─Linear: 3-27                      (recursive)
+│    │    └─Linear: 3-28                      (recursive)
+│    │    └─LSTM: 3-29                        (recursive)
+│    │    └─Linear: 3-30                      (recursive)
+│    └─LSTM: 2-9                              (recursive)
+├─MlpExtractor: 1-4                           --
+│    └─Sequential: 2-10                       --
+│    │    └─Linear: 3-31                      16,448
+│    │    └─Tanh: 3-32                        --
+│    │    └─Linear: 3-33                      4,160
+│    │    └─Tanh: 3-34                        --
+│    └─Sequential: 2-11                       --
+│    │    └─Linear: 3-35                      16,448
+│    │    └─Tanh: 3-36                        --
+│    │    └─Linear: 3-37                      4,160
+│    │    └─Tanh: 3-38                        --
+├─Linear: 1-5                                 61,230
+├─Linear: 1-6                                 65
+├─LSTM: 1-7                                   272,384
+├─LSTM: 1-8                                   272,384
+======================================================================
+Total params: 706,576
+Trainable params: 647,279
+Non-trainable params: 59,297
+======================================================================
+Logging to ./chess_logs/7_LSTM_Autoencoder_MaskableRecurrentPPO_1
+---------------------------------
+| custom/            |          |
+|    draws           | 0        |
+|    episodes        | 13420    |
+|    invalid_moves   | 0        |
+|    losses          | 6664     |
+|    valid_moves     | 260000   |
+|    win_rate        | 0.503    |
+|    wins            | 6756     |
+| rollout/           |          |
+|    ep_len_mean     | 18.6     |
+|    ep_rew_mean     | 5.84     |
+| time/              |          |
+|    fps             | 2071     |
+|    iterations      | 1        |
+|    time_elapsed    | 126      |
+|    total_timesteps | 262144   |
+---------------------------------
+------------------------------------------
+| custom/                 |              |
+|    draws                | 0            |
+|    episodes             | 27516        |
+|    invalid_moves        | 0            |
+|    losses               | 12446        |
+|    valid_moves          | 520000       |
+|    win_rate             | 0.548        |
+|    wins                 | 15070        |
+| rollout/                |              |
+|    ep_len_mean          | 19.8         |
+|    ep_rew_mean          | 45.2         |
+| time/                   |              |
+|    fps                  | 1475         |
+|    iterations           | 2            |
+|    time_elapsed         | 355          |
+|    total_timesteps      | 524288       |
+| train/                  |              |
+|    approx_kl            | 0.0092052175 |
+|    clip_fraction        | 0.0285       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -2.58        |
+|    explained_variance   | -3.7e-06     |
+|    learning_rate        | 0.0001       |
+|    loss                 | 719          |
+|    n_updates            | 10           |
+|    policy_gradient_loss | -0.00723     |
+|    value_loss           | 1.46e+03     |
+------------------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 42440       |
+|    invalid_moves        | 0           |
+|    losses               | 17380       |
+|    valid_moves          | 780000      |
+|    win_rate             | 0.59        |
+|    wins                 | 25060       |
+| rollout/                |             |
+|    ep_len_mean          | 15.7        |
+|    ep_rew_mean          | 34.1        |
+| time/                   |             |
+|    fps                  | 1336        |
+|    iterations           | 3           |
+|    time_elapsed         | 588         |
+|    total_timesteps      | 786432      |
+| train/                  |             |
+|    approx_kl            | 0.012517515 |
+|    clip_fraction        | 0.134       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.55       |
+|    explained_variance   | 0.000448    |
+|    learning_rate        | 0.0001      |
+|    loss                 | 765         |
+|    n_updates            | 20          |
+|    policy_gradient_loss | -0.0166     |
+|    value_loss           | 1.52e+03    |
+-----------------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 58812       |
+|    invalid_moves        | 0           |
+|    losses               | 21744       |
+|    valid_moves          | 1040000     |
+|    win_rate             | 0.63        |
+|    wins                 | 37068       |
+| rollout/                |             |
+|    ep_len_mean          | 16.3        |
+|    ep_rew_mean          | 83.9        |
+| time/                   |             |
+|    fps                  | 1268        |
+|    iterations           | 4           |
+|    time_elapsed         | 826         |
+|    total_timesteps      | 1048576     |
+| train/                  |             |
+|    approx_kl            | 0.011703383 |
+|    clip_fraction        | 0.126       |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.49       |
+|    explained_variance   | 0.00285     |
+|    learning_rate        | 0.0001      |
+|    loss                 | 788         |
+|    n_updates            | 30          |
+|    policy_gradient_loss | -0.0198     |
+|    value_loss           | 1.6e+03     |
+-----------------------------------------
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+[0;32m-> Model saved on models/7_LSTM_Autoencoder_MaskableRecurrentPPO_20250804_183847.zip[0m
+Initializing MiniChessEnv: 5x5 board with invalid action masking =True, original_step=False
+Evaluating 7_LSTM_Autoencoder_MaskableRecurrentPPO agent...
+[0;36m-> Mean Reward: 155.35 +/- 45.85[0m
+[0;37mParsed arguments:[0m
+[0;37m   agent_name: 8_Naive_Transformer_PPO[0m
+[0;37m   model_path: models/8_Naive_Transformer_PPO_20250804_185444.zip[0m
+[0;37m   log_dir: ./chess_logs[0m
+[0;37m   total_timesteps: 1000000[0m
+[0;37m   n_envs: 16[0m
+[0;37m   n_steps: 16384[0m
+[0;37m   batch_size: 16384[0m
+[0;37m   n_epochs: 10[0m
+[0;37m   n_samples_ae: 1000000[0m
+[0;37m   n_epochs_ae: 20[0m
+[0;37m   force_clean_ae: False[0m
+[0;37m   share_features_extractor: True[0m
+[0;37m   print_model_only: False[0m
+Training '8_Naive_Transformer_PPO' agent using device 'cuda' and '16' parallel environments...
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:214: UserWarning: constant_fn() is deprecated, please use ConstantSchedule() instead
+  warnings.warn("constant_fn() is deprecated, please use ConstantSchedule() instead")
+[0;35m-> share_features_extractor: True[0m
+Using cuda device
+[0;36m-> Model summary:[0m
+=====================================================================================
+Layer (type:depth-idx)                                       Param #
+=====================================================================================
+MaskableMultiInputActorCriticPolicy                          --
+├─TransformerFeatureExtractor: 1-1                           --
+│    └─TinyGPT2Encoder: 2-1                                  --
+│    │    └─GPT2Model: 3-1                                   108,096
+│    └─Linear: 2-2                                           1,664
+├─TransformerFeatureExtractor: 1-2                           (recursive)
+│    └─TinyGPT2Encoder: 2-3                                  (recursive)
+│    │    └─GPT2Model: 3-2                                   (recursive)
+│    └─Linear: 2-4                                           (recursive)
+├─TransformerFeatureExtractor: 1-3                           (recursive)
+│    └─TinyGPT2Encoder: 2-5                                  (recursive)
+│    │    └─GPT2Model: 3-3                                   (recursive)
+│    └─Linear: 2-6                                           (recursive)
+├─MlpExtractor: 1-4                                          --
+│    └─Sequential: 2-7                                       --
+│    │    └─Linear: 3-4                                      4,160
+│    │    └─Tanh: 3-5                                        --
+│    │    └─Linear: 3-6                                      4,160
+│    │    └─Tanh: 3-7                                        --
+│    └─Sequential: 2-8                                       --
+│    │    └─Linear: 3-8                                      4,160
+│    │    └─Tanh: 3-9                                        --
+│    │    └─Linear: 3-10                                     4,160
+│    │    └─Tanh: 3-11                                       --
+├─Linear: 1-5                                                61,230
+├─Linear: 1-6                                                65
+=====================================================================================
+Total params: 187,695
+Trainable params: 187,695
+Non-trainable params: 0
+=====================================================================================
+Logging to ./chess_logs/8_Naive_Transformer_PPO_1
+---------------------------------
+| custom/            |          |
+|    draws           | 0        |
+|    episodes        | 13443    |
+|    invalid_moves   | 0        |
+|    losses          | 6590     |
+|    valid_moves     | 260000   |
+|    win_rate        | 0.51     |
+|    wins            | 6853     |
+| rollout/           |          |
+|    ep_len_mean     | 20.2     |
+|    ep_rew_mean     | -13.1    |
+| time/              |          |
+|    fps             | 1882     |
+|    iterations      | 1        |
+|    time_elapsed    | 139      |
+|    total_timesteps | 262144   |
+---------------------------------
+------------------------------------------
+| custom/                 |              |
+|    draws                | 0            |
+|    episodes             | 27297        |
+|    invalid_moves        | 0            |
+|    losses               | 12369        |
+|    valid_moves          | 520000       |
+|    win_rate             | 0.547        |
+|    wins                 | 14928        |
+| rollout/                |              |
+|    ep_len_mean          | 17.9         |
+|    ep_rew_mean          | 61.5         |
+| time/                   |              |
+|    fps                  | 1789         |
+|    iterations           | 2            |
+|    time_elapsed         | 293          |
+|    total_timesteps      | 524288       |
+| train/                  |              |
+|    approx_kl            | 0.0045030285 |
+|    clip_fraction        | 0.0211       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -2.59        |
+|    explained_variance   | -0.00065     |
+|    learning_rate        | 0.0001       |
+|    loss                 | 726          |
+|    n_updates            | 10           |
+|    policy_gradient_loss | -0.0124      |
+|    value_loss           | 1.45e+03     |
+------------------------------------------
+-----------------------------------------
+| custom/                 |             |
+|    draws                | 0           |
+|    episodes             | 42351       |
+|    invalid_moves        | 0           |
+|    losses               | 17469       |
+|    valid_moves          | 780000      |
+|    win_rate             | 0.588       |
+|    wins                 | 24882       |
+| rollout/                |             |
+|    ep_len_mean          | 18.4        |
+|    ep_rew_mean          | 67.5        |
+| time/                   |             |
+|    fps                  | 1754        |
+|    iterations           | 3           |
+|    time_elapsed         | 448         |
+|    total_timesteps      | 786432      |
+| train/                  |             |
+|    approx_kl            | 0.005459561 |
+|    clip_fraction        | 0.0326      |
+|    clip_range           | 0.2         |
+|    entropy_loss         | -2.57       |
+|    explained_variance   | 0.00718     |
+|    learning_rate        | 0.0001      |
+|    loss                 | 730         |
+|    n_updates            | 20          |
+|    policy_gradient_loss | -0.0143     |
+|    value_loss           | 1.49e+03    |
+-----------------------------------------
+------------------------------------------
+| custom/                 |              |
+|    draws                | 0            |
+|    episodes             | 59536        |
+|    invalid_moves        | 0            |
+|    losses               | 21766        |
+|    valid_moves          | 1040000      |
+|    win_rate             | 0.634        |
+|    wins                 | 37770        |
+| rollout/                |              |
+|    ep_len_mean          | 15.2         |
+|    ep_rew_mean          | 71.1         |
+| time/                   |              |
+|    fps                  | 1729         |
+|    iterations           | 4            |
+|    time_elapsed         | 606          |
+|    total_timesteps      | 1048576      |
+| train/                  |              |
+|    approx_kl            | 0.0072247814 |
+|    clip_fraction        | 0.0535       |
+|    clip_range           | 0.2          |
+|    entropy_loss         | -2.53        |
+|    explained_variance   | 0.0106       |
+|    learning_rate        | 0.0001       |
+|    loss                 | 749          |
+|    n_updates            | 30           |
+|    policy_gradient_loss | -0.0178      |
+|    value_loss           | 1.6e+03      |
+------------------------------------------
+/home/herreramaxi/miniconda3/envs/gymnasium-env/lib/python3.11/site-packages/stable_baselines3/common/utils.py:168: UserWarning: get_schedule_fn() is deprecated, please use FloatSchedule() instead
+  warnings.warn("get_schedule_fn() is deprecated, please use FloatSchedule() instead")
+[0;32m-> Model saved on models/8_Naive_Transformer_PPO_20250804_185444.zip[0m
+Initializing MiniChessEnv: 5x5 board with invalid action masking =True, original_step=False
+Evaluating 8_Naive_Transformer_PPO agent...
+[0;36m-> Mean Reward: 163.83 +/- 3.67[0m
+[0;36m-> Starting experiments...[0m
+[0;37mParsed arguments:[0m
+[0;37m  parallel: False[0m
+[0;37m  max_workers: 3[0m
+[0;37m  num_repeats: 1[0m
+[0;37mArguments to be forwarded: ['--total-timesteps', '1000000', '--n-envs', '16', '--batch-size', '16384', '--n-steps', '16384', '--share-features-extractor'][0m
+[0;36m-> Running Preprocessing Tasks...[0m
+[0;35m-> Running script: ae_pretrain.py with args ['--n-samples', '100000', '--n-epochs', '20', '--force-clean', 'False'][0m
+[0;32m-> [ae_pretrain.py] Finished in 3.1s[0m
+[0;35m-> Running script: ae_rnn_pretrain.py with args ['--n-samples', '100000', '--n-epochs', '20', '--force-clean', 'False'][0m
+[0;32m-> [ae_rnn_pretrain.py] Finished in 2.7s[0m
+[0;35m-> Running experiments, num_repeats: 1, mode: Sequential[0m
+[0;36m-> Iteration: 1[0m
+[0;35m-> Running script: Chess_1_PPO.py with args ['--total-timesteps', '1000000', '--n-envs', '16', '--batch-size', '16384', '--n-steps', '16384', '--share-features-extractor'][0m
+[0;32m-> [Chess_1_PPO.py] Finished in 221.6s[0m
+[0;35m-> Running script: Chess_2_MaskablePPO.py with args ['--total-timesteps', '1000000', '--n-envs', '16', '--batch-size', '16384', '--n-steps', '16384', '--share-features-extractor'][0m
+[0;32m-> [Chess_2_MaskablePPO.py] Finished in 472.0s[0m
+[0;35m-> Running script: Chess_3_MaskableRecurrentPPO.py with args ['--total-timesteps', '1000000', '--n-envs', '16', '--batch-size', '16384', '--n-steps', '16384', '--share-features-extractor'][0m
+[0;32m-> [Chess_3_MaskableRecurrentPPO.py] Finished in 898.0s[0m
+[0;35m-> Running script: Chess_4_FF_AutoEncoder_MaskablePPO.py with args ['--total-timesteps', '1000000', '--n-envs', '16', '--batch-size', '16384', '--n-steps', '16384', '--share-features-extractor'][0m
+[0;32m-> [Chess_4_FF_AutoEncoder_MaskablePPO.py] Finished in 486.1s[0m
+[0;35m-> Running script: Chess_5_FF_Autoencoder_MaskableRecurrentPPO.py with args ['--total-timesteps', '1000000', '--n-envs', '16', '--batch-size', '16384', '--n-steps', '16384', '--share-features-extractor'][0m
+[0;32m-> [Chess_5_FF_Autoencoder_MaskableRecurrentPPO.py] Finished in 936.3s[0m
+[0;35m-> Running script: Chess_6_LSTM_Autoencoder_MaskablePPO.py with args ['--total-timesteps', '1000000', '--n-envs', '16', '--batch-size', '16384', '--n-steps', '16384', '--share-features-extractor'][0m
+[0;32m-> [Chess_6_LSTM_Autoencoder_MaskablePPO.py] Finished in 497.7s[0m
+[0;35m-> Running script: Chess_7_LSTM_Autoencoder_MaskableRecurrentPPO.py with args ['--total-timesteps', '1000000', '--n-envs', '16', '--batch-size', '16384', '--n-steps', '16384', '--share-features-extractor'][0m
+[0;32m-> [Chess_7_LSTM_Autoencoder_MaskableRecurrentPPO.py] Finished in 953.5s[0m
+[0;35m-> Running script: Chess_8_Transformer.py with args ['--total-timesteps', '1000000', '--n-envs', '16', '--batch-size', '16384', '--n-steps', '16384', '--share-features-extractor'][0m
+[0;32m-> [Chess_8_Transformer.py] Finished in 637.7s[0m
+[0;32m-> Experiments have completed in 85.05 minutes (5103.0s)[0m
+[0;32m-> All done in 85.15 minutes (5108.8s)[0m
