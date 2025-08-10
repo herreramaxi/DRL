@@ -9,3 +9,4 @@ tensorboard
 sb3_contrib
 torchinfo
 transformers
+-e ./stable-baselines3-contrib

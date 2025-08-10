@@ -29,25 +29,25 @@ class SimpleLSTMAutoencoder(nn.Module):
         super().__init__()
 
         self.seq_len = seq_len
-        self.input_dim = board_size * board_size  # 25
-        self.hidden_dim = hidden_dim
-        self.latent_dim = latent_dim
+        self.input_dim = board_size * board_size    # 25
+        self.hidden_dim = hidden_dim                # 64
+        self.latent_dim = latent_dim                # 8
         # Encoder
         self.encoder_lstm = nn.LSTM(
-            input_size=self.input_dim,
-            hidden_size=hidden_dim,
+            input_size=self.input_dim,              # 25
+            hidden_size=hidden_dim,                 # 64
             batch_first=True,
         )
-        self.to_latent = nn.Linear(hidden_dim, latent_dim)
+        self.to_latent = nn.Linear(hidden_dim, latent_dim)      # (64, 8): bottle neck
 
-        # Decoder ← mirror encoder hidden_dim
-        self.from_latent  = nn.Linear(latent_dim, hidden_dim)
+        # Decoder: mirror encoder hidden_dim, from 8 --> 64
+        self.from_latent  = nn.Linear(latent_dim, hidden_dim)   # (8, 64)
         self.decoder_lstm = nn.LSTM(
-            input_size=hidden_dim,
-            hidden_size=hidden_dim,
+            input_size=hidden_dim,                  # 64
+            hidden_size=hidden_dim,                 # 8
             batch_first=True,
         )
-        self.out_proj = nn.Linear(hidden_dim, self.input_dim)
+        self.out_proj = nn.Linear(hidden_dim, self.input_dim)   # (64, 25): reconstruction
 
     def forward(self, x_seq):
         B = x_seq.size(0)
@@ -103,7 +103,7 @@ def collect_sequences(args):
     pbar.close()
     arr = np.stack(seqs).astype(np.float32)  # shape (n_seq, SEQ_LEN,5,5)
     np.save(args.board_file_path, arr)
-    print(f"Saved {arr.shape[0]} sequences → {args.board_file_path}")
+    print(f"Saved {arr.shape[0]} sequences --> {args.board_file_path}")
 
 def pretrain_ae(args):
     # 1) load & normalize boards
@@ -129,7 +129,7 @@ def pretrain_ae(args):
         print(f"Epoch {epoch}: avg loss {tot/len(loader.dataset):.6f}")
 
     torch.save(ae.state_dict(), args.weights_file_path)
-    print(f"Saved pretrained AE → {args.weights_file_path}")
+    print(f"Saved pretrained AE --> {args.weights_file_path}")
 
 if __name__ == "__main__":
     args = parse_arguments_ae(50_000,"boards/board_seqs.npy","weights/ae_rnn_pretrained.pth")   

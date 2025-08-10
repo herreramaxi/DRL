@@ -24,4 +24,7 @@ dependencies:
       - tensorboard  
       - torchinfo
       - transformers
+      - python-chess
       # - git+https://github.com/wdlctc/recurrent_maskable.git
+      # - torchviz # to properly work with graphviz, this one has to be installed in in the OS
+      # - torchview

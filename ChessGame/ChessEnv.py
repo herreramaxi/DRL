@@ -176,7 +176,7 @@ class MinichessEnv(gym.Env):
                         reward += DRAW_REWARD
                         info["result"] = "draw"
 
-                # # If opponent gave CHECK → negative reward
+                # # If opponent gave CHECK --> negative reward
                 # if AbstractActionFlags.CHECK in self.board.peek().modifier_flags:
                 #     reward -= CHECK_REWARD
 

@@ -49,23 +49,23 @@ def collect_boards(args):
 
     boards = np.stack(boards).astype(np.float32)  # shape (N_SAMPLES,5,5)
     np.save(args.board_file_path, boards)
-    print(f"Saved {boards.shape[0]} boards → {args.board_file_path}")
+    print(f"Saved {boards.shape[0]} boards --> {args.board_file_path}")
 
 class BoardAutoencoder(nn.Module):
     def __init__(self, input_dim=INPUT_DIM, hidden_dim=HIDDEN_DIM, latent_dim=LATENT_DIM):
         super().__init__()
         self.encoder = nn.Sequential(
-            nn.Flatten(),                          # (B,5,5)→(B,25)
-            nn.Linear(input_dim, hidden_dim),      # (B,25)→(B,64)
+            nn.Flatten(),                          # (B,5,5)-->(B,25)
+            nn.Linear(input_dim, hidden_dim),      # (B,25)-->(B,64)
             nn.ReLU(),
-            nn.Linear(hidden_dim, latent_dim),     # (B,64)→(B,8)
+            nn.Linear(hidden_dim, latent_dim),     # (B,64)-->(B,8)
         )
         self.decoder = nn.Sequential(
-            nn.Linear(latent_dim, hidden_dim),     # (B,8)→(B,64)
+            nn.Linear(latent_dim, hidden_dim),     # (B,8)-->(B,64)
             nn.ReLU(),
-            nn.Linear(hidden_dim, input_dim),      # (B,64)→(B,25)
-            nn.Sigmoid(),                          # (B,25)→[0,1]
-            nn.Unflatten(1, (5, 5)),               # →(B,5,5)
+            nn.Linear(hidden_dim, input_dim),      # (B,64)-->(B,25)
+            nn.Sigmoid(),                          # (B,25)-->[0,1]
+            nn.Unflatten(1, (5, 5)),               # -->(B,5,5)
         )
 
     def forward(self, x):
@@ -108,7 +108,7 @@ def pretrain_ae(args):
 
     # 5) save weights
     torch.save(ae.state_dict(), args.weights_file_path)
-    print(f"Saved pretrained AE → {args.weights_file_path}")
+    print(f"Saved pretrained AE --> {args.weights_file_path}")
 
 if __name__ == "__main__":
     args = parse_arguments_ae(50_000,"boards/boards.npy","weights/ae_pretrained.pth")   

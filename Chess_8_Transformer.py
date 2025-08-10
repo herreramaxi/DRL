@@ -49,7 +49,7 @@ class TransformerFeatureExtractor(BaseFeaturesExtractor):
     def __init__(self, observation_space, transformer_model):
         super().__init__(observation_space, features_dim=transformer_model.config.n_embd)
         self.transformer = transformer_model
-        self.project = nn.Linear(25, transformer_model.config.n_embd)  # 25 → 64
+        self.project = nn.Linear(25, transformer_model.config.n_embd)  # 25 --> 64
 
     def forward(self, observations):
         board = observations["board"].view(observations["board"].size(0), -1)  # (batch, 25)
