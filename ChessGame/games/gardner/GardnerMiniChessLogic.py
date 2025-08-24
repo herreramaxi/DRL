@@ -233,7 +233,7 @@ class Board:
         return result
 
     def display(self,player):
-        print()
+        # print()
         SPACE = ' '
         uni_pieces = {
             -Board.ROOK: '♜',

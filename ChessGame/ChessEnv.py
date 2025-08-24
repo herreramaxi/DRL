@@ -35,7 +35,7 @@ class MinichessEnv(gym.Env):
         
         self.steps = 0
         self.action_space = Discrete(self.game.getActionSize())
-      
+
         if(invalid_action_masking):
             # Masking invalid actions
             self.observation_space = Dict({
@@ -63,7 +63,7 @@ class MinichessEnv(gym.Env):
             # print([self.game.id_to_action[move] for move in self.legal_moves])
             print(self.game.display(self.board,self.player))
             print(self.player)
-            print(self.game.id_to_action[action], "BAD ACTION")
+            print(self.game.id_to_action[action], "BAD ACTION ORIGINAL")
             assert False
             return self._obs(), -0.01, False, {}
         elif self.steps == 100:
@@ -161,7 +161,7 @@ class MinichessEnv(gym.Env):
             if legal_moves:
                 move = random.choice(legal_moves)                
                 self.board, self.player = self.game.getNextState(self.board, self.player, move)
-                info["chess_move"] =  info["chess_move"] + " , " + self.get_action_humanized(move, -1)
+                info["chess_move"] =  info["chess_move"] + "," + self.get_action_humanized(move, -1)
                 game_result = self.game.getGameEnded(self.board, 1,0.5)
                 done = game_result != 0
 
@@ -229,7 +229,7 @@ class MinichessEnv(gym.Env):
         return {"board": board, "actions": mask}
 
     def render(self, mode="human"):
-        print("\nCurrent Board:")
+        print("Current Board:")
         print(self.game.display(self.board, self.player))
 
 

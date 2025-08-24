@@ -174,19 +174,37 @@ class GardnerMiniChessGame(Game):
         
         piece = action[0]
         piece_humanized = self.get_piece_humamized(piece, player)
-        source = self.get_position_humanized(action[1])
-        target = self.get_position_humanized(action[2])
+        source = self.get_position_humanized(action[1],player)
+        target = self.get_position_humanized(action[2],player)
+              
         return f"{piece_humanized} {source}-{target}"
     
+    
+    def cell_to_position(self, x):
+        i = (x-15)//7
+        j = chr(ord('a') + (x-15-i*7))
+        return j + str(i)
+
     square_map = {
         15: "a5", 16: "b5", 17: "c5", 18: "d5", 19: "e5",
         22: "a4", 23: "b4", 24: "c4", 25: "d4", 26: "e4",
         29: "a3", 30: "b3", 31: "c3", 32: "d3", 33: "e3",
         36: "a2", 37: "b2", 38: "c2", 39: "d2", 40: "e2",
         43: "a1", 44: "b1", 45: "c1", 46: "d1", 47: "e1"}
-    def get_position_humanized(self, position):
-        return self.square_map.get(position, "Invalid Position")
-
+   
+    square_map_mirrored = {
+        15: "a1", 16: "b1", 17: "c1", 18: "d1", 19: "e1",
+        22: "a2", 23: "b2", 24: "c2", 25: "d2", 26: "e2",
+        29: "a3", 30: "b3", 31: "c3", 32: "d3", 33: "e3",
+        36: "a4", 37: "b4", 38: "c4", 39: "d4", 40: "e4",
+        43: "a5", 44: "b5", 45: "c5", 46: "d5", 47: "e5",
+    }
+    def get_position_humanized(self, position, player):
+        if player == 1:
+            return self.square_map.get(position, "Invalid Position")
+        
+        return self.square_map_mirrored.get(position, "Invalid Position")
+    
     def get_piece_humamized(self, piece, player):
         if player == 1:
             if piece == Board.ROOK:
