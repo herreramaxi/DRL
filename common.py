@@ -54,8 +54,9 @@ def parse_arguments(agent_name, total_timesteps= 1_000_000, n_envs=4, n_steps=51
     parser.add_argument("--n-samples-ae",     type=int,   default=n_samples_ae)    
     parser.add_argument("--n-epochs-ae",     type=int,   default=n_epochs_ae)    
     parser.add_argument("--force-clean-ae",     type=str,   default=force_clean)    
-    parser.add_argument( "--share-features-extractor",action="store_true",help="Share the features extractor between actor and critic")    
-    parser.add_argument( "--print-model-only",action="store_true",help="Print model summary only, it does not train or evaluate model")    
+    parser.add_argument("--share-features-extractor",action="store_true",help="Share the features extractor between actor and critic")    
+    parser.add_argument("--print-model-only",action="store_true",help="Print model summary only, it does not train or evaluate model")   
+    parser.add_argument("--log-interval",     type=int,   default=5000)    
 
     args = parser.parse_args()
 
@@ -97,7 +98,7 @@ def model_learn(args, model):
         important2("Skipping model.learn(), print_model_only is True")
         return
     
-    callback = WinRateCallback(log_interval=5000)
+    callback = WinRateCallback(log_interval=args.log_interval)
     model.learn(total_timesteps=args.total_timesteps, tb_log_name=args.agent_name,callback=callback)
     model.save(args.model_path)
     success(f"Model saved on {args.model_path}")

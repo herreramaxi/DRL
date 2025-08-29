@@ -12,7 +12,7 @@ from stable_baselines3 import PPO
 register_chess_env() 
 
 def make_env():
-    env =  gym.make("gymnasium_env/ChessGame-v0",invalid_action_masking=True, original_step=False) 
+    env =  gym.make("gymnasium_env/ChessGame-v0",invalid_action_masking=True, original_step=False, skip_reset_when_finished=True) 
     return env
 
 if __name__ == "__main__":

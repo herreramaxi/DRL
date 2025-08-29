@@ -1,0 +1,110 @@
+# DRL
+
+## Conda
+conda env create --file=requirements.yml
+conda env update --file=requirements.yml
+conda activate gymnasium-env
+conda deactivate
+
+## Running Experiments
+python train.py
+python train.py --total-timesteps 1000000 --n-envs 4 --num-repeats 3
+python train.py --total-timesteps 2000000 --n-envs 4 --num-repeats 3
+python train.py --total-timesteps 3000000 --n-envs 4 --num-repeats 3
+python train.py --total-timesteps 5000000 --n-envs 4 --num-repeats 3
+python train.py  --share-features-extractor --total-timesteps 10 --n-envs 1 --batch-size 10 --n-steps 10  --num-repeats 1  
+"--batch-size", "64", "--n-steps", "10"
+
+nohup python train.py --total-timesteps 1000000 --n-envs 4 --num-repeats 3 > logs.out 2>&1 &   #fps 1378-1385
+nohup python train.py --total-timesteps 1000000 --n-envs 4 --num-repeats 3 --batch-size 1024 --n-steps 1024  > logs.out 2>&1 &  #1728
+nohup python train.py --total-timesteps 1000000 --n-envs 4 --num-repeats 3 --batch-size 2048 --n-steps 2048  > logs.out 2>&1 &  #1800
+nohup python train.py --total-timesteps 1000000 --n-envs 10 --num-repeats 3 --batch-size 2048 --n-steps 2048  > logs.out 2>&1 &  #3373
+nohup python train.py --total-timesteps 1000000 --n-envs 10 --num-repeats 3 --batch-size 4096 --n-steps 4096  > logs.out 2>&1 &  #3566
+nohup python train.py --total-timesteps 1000000 --n-envs 16 --num-repeats 1 --batch-size 4096 --n-steps 4096  > logs.out 2>&1 &  #4567,3.64
+
+
+python train.py --total-timesteps 1000000 --n-envs 16 --num-repeats 3 --batch-size 4096 --n-steps 4096  #5185
+python train.py --total-timesteps 1000000 --n-envs 5 --num-repeats 3 --batch-size 4096 --n-steps 4096  --parallel True --max-workers 2 -- #5185
+
+python train.py --total-timesteps 1000000 --n-envs 20 --num-repeats 3 --batch-size 4096 --n-steps 4096  #6100-6678,2.73
+python train.py --total-timesteps 1000000 --n-envs 16 --num-repeats 3 --batch-size 8192 --n-steps 8192  #5614-6042
+nohup python train.py --total-timesteps 1000000 --n-envs 16 --num-repeats 5 --batch-size 8192 --n-steps 8192  > logs.out 2>&1 &   #5614-6042
+nohup python train.py --total-timesteps 1000000 --n-envs 16 --num-repeats 1 --batch-size 8192 --n-steps 8192  > logs.out 2>&1 &  # tooks 1hour and 30 minuts
+nohup python train.py --total-timesteps 1000000 --n-envs 16 --num-repeats 1 --batch-size 16384 --n-steps 16384 --share-features-extractor  > logs.out 2>&1 &  #5500
+
+python train.py --total-timesteps 1000000 --n-envs 20 --num-repeats 5 --batch-size 8192 --n-steps 8192  #6323-6917
+
+python train.py --total-timesteps 1000000 --n-envs 10 --num-repeats 5 --batch-size 8192 --n-steps 8192  --parallel True --max-workers 8  > logs.out 2>&1 & 
+nohup python train.py --total-timesteps 1000000 --n-envs 2 --num-repeats 5 --batch-size 8192 --n-steps 8192 --parallel True --max-workers 8  > logs.out 2>&1 & 
+
+python train.py --total-timesteps 1000000 --n-envs 16 --num-repeats 1 --batch-size 4096 --n-steps 4096 
+python train.py --total-timesteps 1000000 --n-envs 20 --num-repeats 1 --batch-size 8192 --n-steps 8192
+python train.py --total-timesteps 1000000 --n-envs 20 --num-repeats 1 --batch-size 16384 --n-steps 16384  
+
+
+
+
+python run_all.py \
+  --parallel True \
+  --max-workers 4 \
+  --total-timesteps 1000000 \
+  --n-envs 4 \
+  --n-steps 4096 \
+  --batch-size 4096 \
+  --num-repeats 3
+  
+python train.py --total-timesteps 1000000 --n-envs 4 --n-steps 250 --batch-size 100  --num-repeats 3
+nohup python train.py --total-timesteps 1000000 --n-envs 4 --num-repeats 3 --batch-size 512 --n-steps 2048  > logs.out 2>&1 &  #1640
+
+buffer_size = n_steps * n_envs = 1024 * 4 = 4096
+batch_size = 1024           # 4096 % 1024 == 0
+n_epochs    = 10
+# Check Nvidia utilization
+nvidia-smi
+
+1:30 hour (   share_features_extractor: bool = False,)
+  total_timesteps: 1000000
+   n_envs: 16
+   n_steps: 8192
+   batch_size: 8192
+   n_epochs: 10
+   n_samples_ae: 1000000
+   n_epochs_ae: 20
+   force_clean_ae: False
+
+python train.py \
+  --total-timesteps 1000000 \
+  --n-envs 16 \
+  --n-steps 4096 \
+  --batch-size 16384 \
+  --n-epochs 10 \
+  --num-repeats 3 \
+  --share-features-extractor
+
+nohup python train.py --num-repeats 3 --n-envs 16 --total-timesteps 1000000 --batch-size 16384 --n-steps 4096 --n-epochs 10 --share-features-extractor  > logs.out 2>&1 &    
+nohup python train.py --num-repeats 3 --n-envs 16 --total-timesteps 5000000 --batch-size 16384 --n-steps 4096 --n-epochs 10 --share-features-extractor --experiments 2 5 7 8 > logs.out 2>&1 &   OOM
+
+nohup python train.py --num-repeats 3 --n-envs 10 --total-timesteps 5000000 --batch-size 8192 --n-steps 4096 --n-epochs 10 --share-features-extractor --experiments 2 5 7 8 > logs.out 2>&1 &   
+
+
+buffer_size = 4096 * 16 = 65536
+batch_size = 4096 # 65536/4096 = 16
+
+nohup python train.py \
+    --num-repeats 3 \
+    --n-envs 16 \
+    --total-timesteps 1000000 \
+    --batch-size 16384 \
+    --n-steps 4096 \
+    --n-epochs 10 \
+    --share-features-extractor \
+    > logs.out 2>&1 &
+
+
+buffer_size = n_steps * n_envs = 512 * 4 = 2560
+batch_size = 1024           # 2560 % 1024 == 0
+n_epochs    = 10
+
+python train.py --num-repeats 1 --n-envs 1 --total-timesteps 1000 --batch-size 128 --n-steps 256 --n-epochs 5 --share-features-extractor --experiments Chess_8_Transformer --log-dir ./chess_logs2 --skip-pretraining --log-interval 200
+
+tensorboard --logdir=./chess_logs2

@@ -23,8 +23,8 @@ MATERIAL_SCALE = 1 / 1000       # Keep material shaping (max ~125)
 MAX_STEPS = 100
 
 class MinichessEnv(gym.Env):
-    def __init__(self, size: int = 5, invalid_action_masking = False, original_step = False) -> None:
-        print(f"Initializing MiniChessEnv: {size}x{size} board with invalid action masking ={invalid_action_masking}, original_step={original_step}")
+    def __init__(self, size: int = 5, invalid_action_masking = False, original_step = False, skip_reset_when_finished = False) -> None:
+        print(f"Initializing MiniChessEnv: {size}x{size} board with invalid action masking ={invalid_action_masking}, original_step={original_step}, skip_reset_when_finished={skip_reset_when_finished}")
         self.original_step = original_step
         self.invalid_action_masking = invalid_action_masking
         self.game = GardnerMiniChessGame()
@@ -32,7 +32,8 @@ class MinichessEnv(gym.Env):
         self.player = 1
         self.legal_moves = self._get_legal_actions()
         self.legal_moves_one_hot = self._get_legal_actions(return_type="one_hot")
-        
+        self.skip_reset_when_finished = skip_reset_when_finished
+        self.done = False
         self.steps = 0
         self.action_space = Discrete(self.game.getActionSize())
 
@@ -47,7 +48,11 @@ class MinichessEnv(gym.Env):
                 "actions": Box(0, 1, shape=(self.action_space.n,), dtype=np.float32),
             })
 
-    def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
+    def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):        
+        if self.skip_reset_when_finished and self.done:
+            print("Skipping reset since episode is finished and skip_reset_when_finished is True.")
+            return self._obs(), {}
+        
         super().reset(seed=seed)
         self.game = GardnerMiniChessGame()
         self.board = self.game.getInitBoard()
@@ -71,10 +76,7 @@ class MinichessEnv(gym.Env):
 
         self.board, self.player = self.game.getNextState(self.board, self.player, action)
         reward = self.game.getGameEnded(self.board, 1)
-        done = reward != 0
-        
-        # if done:
-        #     print(self.steps)
+        done = reward != 0       
 
         if not done:
             # Play random move for other agent
@@ -96,7 +98,7 @@ class MinichessEnv(gym.Env):
             # print("\nGAME OVER {}\n".format(reward)) 
             pass
 
-        self.steps += 1
+        self.steps += 1       
 
         return obs, reward, done, False, {}
     
@@ -195,6 +197,7 @@ class MinichessEnv(gym.Env):
         truncated = self.steps >= MAX_STEPS
 
         info["move"] = "valid"
+        self.done = done            
         return obs, reward, done, truncated, info    
 
 

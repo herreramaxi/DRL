@@ -120,7 +120,8 @@ if __name__ == "__main__":
                         nargs="+",
                         default=None,
                         help="List of experiment script names (or substrings) to run. E.g. --experiments Chess_1 Chess_3 will only run those two.")
-       
+    parser.add_argument("--skip-pretraining",action="store_true")
+    
     args, unknown = parser.parse_known_args()
     info("Parsed arguments:")
     for name, val in vars(args).items():
@@ -141,11 +142,16 @@ if __name__ == "__main__":
        experiments = filtered
         
     important2(f"Experiments to run: {[e['script'] for e in experiments]}") 
-    important("Running Preprocessing Tasks...")
+       
+    if not args.skip_pretraining:
+        important("Running Preprocessing Tasks...")
+
+        for exp in PRE_PROCESSING_TASKS:
+            run_exp(exp, unknown)       
     
-    for exp in PRE_PROCESSING_TASKS:
-        run_exp(exp, unknown)       
-    
+    if args.skip_pretraining:
+        important("Skipping Preprocessing Tasks...")
+
     run_experiments(args.num_repeats, args.parallel == "True", experiments)    
 
     total_time = time.time() - overall_start
