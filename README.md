@@ -28,7 +28,7 @@ conda env update --file=requirements.yml
 ## Running Experiments
 
 ### Experiment 1 (1M steps)
-nohup python train.py \
+nohup python [train.py](https://github.com/herreramaxi/DRL/blob/main/train.py) \
     --num-repeats 3 \
     --n-envs 16 \
     --total-timesteps 1000000 \
@@ -39,7 +39,7 @@ nohup python train.py \
     > logs.out 2>&1 &
 
 ### Experiment 2 (5M steps)
-nohup python train.py \
+nohup python [train.py](https://github.com/herreramaxi/DRL/blob/main/train.py) \
     --num-repeats 3 \
     --n-envs 10 \
     --total-timesteps 5000000 \
@@ -51,21 +51,21 @@ nohup python train.py \
     > logs.out 2>&1 &
 
 ### Basic Run
-python train.py --total-timesteps 100000 --n-envs 4 --num-repeats 1 --share-features-extractor
+python [train.py](https://github.com/herreramaxi/DRL/blob/main/train.py) --total-timesteps 100000 --n-envs 4 --num-repeats 1 --share-features-extractor
 
 ### Examples
-python train.py --total-timesteps 1000000 --n-envs 16 --batch-size 16384 --n-steps 4096 --n-epochs 10 --num-repeats 3 --share-features-extractor
-python train.py --parallel True --max-workers 4 --total-timesteps 1000000 --n-envs 4 --n-steps 4096 --batch-size 4096 --num-repeats 3
+python [train.py](https://github.com/herreramaxi/DRL/blob/main/train.py) --total-timesteps 1000000 --n-envs 16 --batch-size 16384 --n-steps 4096 --n-epochs 10 --num-repeats 3 --share-features-extractor
+python [train.py](https://github.com/herreramaxi/DRL/blob/main/train.py) --parallel True --max-workers 4 --total-timesteps 1000000 --n-envs 4 --n-steps 4096 --batch-size 4096 --num-repeats 3
 
 ## Evaluate Model
 
 ## Evaluate Model (1M steps) 
-* python evaluate_agent.py --rl-algorithm MaskablePPO --model-path ./models/8_Naive_Transformer_PPO_20250805_011256
-* python evaluate_agent.py --rl-algorithm MaskableRecurrentPPO --model-path ./models/7_LSTM_Autoencoder_MaskableRecurrentPPO_20250805_005518
+* python [evaluate_agent.py](https://github.com/herreramaxi/DRL/blob/main/evaluate_agent.py) --rl-algorithm MaskablePPO --model-path ./models/8_Naive_Transformer_PPO_20250805_011256
+* python [evaluate_agent.py](https://github.com/herreramaxi/DRL/blob/main/evaluate_agent.py) --rl-algorithm MaskableRecurrentPPO --model-path ./models/7_LSTM_Autoencoder_MaskableRecurrentPPO_20250805_005518
 
 ## Evaluate Model (5M steps)
-* python evaluate_agent.py --rl-algorithm MaskablePPO --model-path ./models/8_Naive_Transformer_PPO_20250806_221310
-* python evaluate_agent.py --rl-algorithm MaskableRecurrentPPO --model-path ./models/7_LSTM_Autoencoder_MaskableRecurrentPPO_20250806_194219
+* python [evaluate_agent.py](https://github.com/herreramaxi/DRL/blob/main/evaluate_agent.py) --rl-algorithm MaskablePPO --model-path ./models/8_Naive_Transformer_PPO_20250806_221310
+* python [evaluate_agent.py](https://github.com/herreramaxi/DRL/blob/main/evaluate_agent.py) --rl-algorithm MaskableRecurrentPPO --model-path ./models/7_LSTM_Autoencoder_MaskableRecurrentPPO_20250806_194219
 
 ## GPU Monitoring
 nvidia-smi
@@ -80,6 +80,9 @@ nvidia-smi
 * [Chess_7_LSTM_Autoencoder_MaskableRecurrentPPOv.py](https://github.com/herreramaxi/DRL/blob/main/Chess_7_LSTM_Autoencoder_MaskableRecurrentPPO.py)
 * [Chess_8_Transformer.py](https://github.com/herreramaxi/DRL/blob/main/Chess_8_Transformer.py)
 
+## Gardner (Customized) 
+[ChessEnv.py](https://github.com/herreramaxi/DRL/blob/main/ChessGame/ChessEnv.py)
+
 ## References
 
 ### Gardner MiniChess
@@ -89,6 +92,7 @@ Special thanks to Robert and Michael for providing their consent on using Gardne
 ### MaskableRecurrentPPO
 Implementation of maskable recurrent ppo algorithm for contrib package for Stable-Baselines3.
 [MaskableRecurrentPPO](https://github.com/akbaig/stable-baselines3-contrib)
+
 
 
 
