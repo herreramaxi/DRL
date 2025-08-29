@@ -71,14 +71,14 @@ python train.py --parallel True --max-workers 4 --total-timesteps 1000000 --n-en
 nvidia-smi
 
 ## Implemented Agents
-[Chess_1_PPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_1_PPO.py)
-[Chess_2_MaskablePPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_2_MaskablePPO.py)
-[Chess_3_MaskableRecurrentPPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_3_MaskableRecurrentPPO.py)
-[Chess_4_FF_AutoEncoder_MaskablePPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_4_FF_AutoEncoder_MaskablePPO.py)
-[Chess_5_FF_Autoencoder_MaskableRecurrentPPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_5_FF_Autoencoder_MaskableRecurrentPPO.py)
-[Chess_6_LSTM_Autoencoder_MaskablePPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_6_LSTM_Autoencoder_MaskablePPO.py)
-[Chess_7_LSTM_Autoencoder_MaskableRecurrentPPOv.py](https://github.com/herreramaxi/DRL/blob/main/Chess_7_LSTM_Autoencoder_MaskableRecurrentPPO.py)
-[Chess_8_Transformer.py](https://github.com/herreramaxi/DRL/blob/main/Chess_8_Transformer.py)
+* [Chess_1_PPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_1_PPO.py)
+* [Chess_2_MaskablePPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_2_MaskablePPO.py)
+* [Chess_3_MaskableRecurrentPPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_3_MaskableRecurrentPPO.py)
+* [Chess_4_FF_AutoEncoder_MaskablePPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_4_FF_AutoEncoder_MaskablePPO.py)
+* [Chess_5_FF_Autoencoder_MaskableRecurrentPPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_5_FF_Autoencoder_MaskableRecurrentPPO.py)
+* [Chess_6_LSTM_Autoencoder_MaskablePPO.py](https://github.com/herreramaxi/DRL/blob/main/Chess_6_LSTM_Autoencoder_MaskablePPO.py)
+* [Chess_7_LSTM_Autoencoder_MaskableRecurrentPPOv.py](https://github.com/herreramaxi/DRL/blob/main/Chess_7_LSTM_Autoencoder_MaskableRecurrentPPO.py)
+* [Chess_8_Transformer.py](https://github.com/herreramaxi/DRL/blob/main/Chess_8_Transformer.py)
 
 ## References
 
@@ -89,5 +89,6 @@ Special thanks to Robert and Michael for providing their consent on using Gardne
 ### MaskableRecurrentPPO
 Implementation of maskable recurrent ppo algorithm for contrib package for Stable-Baselines3.
 [MaskableRecurrentPPO](https://github.com/akbaig/stable-baselines3-contrib)
+
 
 
